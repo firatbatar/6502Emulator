@@ -35,6 +35,7 @@ extern byte memory[0x10000];
 void resetCPU();
 void resetMemory();
 void setMemory(byte newMem[]);
+void initlizeCPU(byte mem[]);
 
 byte readByte(word addr);
 void writeByte(word addr, byte data);

@@ -41,6 +41,15 @@ void setMemory(byte newMem[]) {
     }
 }
 
+void initlizeCPU(byte mem[]) {
+    resetMemory();
+    printf("Cleared existing memory.\n");
+    setMemory(mem);
+    printf("Set given memory.\n");
+    resetCPU();
+    printf("Reset registers. CPU is ready to run.\n");
+}
+
 /* General Purpose Functionalities */
 
 byte readByte(word addr) { return memory[addr]; }

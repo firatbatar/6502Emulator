@@ -3,5 +3,6 @@
 
 #include <stdio.h>
 #include "cpu.h"
+#include "instructions.h"
 
 #endif

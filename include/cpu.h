@@ -45,6 +45,8 @@ void setOverflowFlag(bool value);
 void setZeroFlag(bool value);
 void setCarryFlag(bool value);
 
+bool validateOpcode(byte aaa, byte bbb, byte validAddrModes[]);
+
 word decodeG1Address(byte bbb);
 
 void executeG1(byte aaa, word addr);

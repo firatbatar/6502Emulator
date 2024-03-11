@@ -1,4 +1,5 @@
 #include "../include/cpu.h"
+#include "../include/instructions.h"
 
 /* Initilaztions */
 
@@ -12,6 +13,11 @@ byte PS = 0;
 
 // Initilize the memory - From 0x0000 to 0xFFFF, 0x10000 bytes
 byte memory[0x10000];
+
+/* There are 8 possible addressing modes
+but not all instructions are able to use all */
+// Valid addressing modes for G1
+byte validAddrModesG1[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFB, 0xFF, 0xFF, 0xFF};
 
 void resetCPU() {
     // Set the program counter to the reset vector
@@ -52,12 +58,16 @@ void initlizeCPU(byte mem[]) {
 
 /* General Purpose Functionalities */
 
+/** Read one byte from the memory */
 byte readByte(word addr) { return memory[addr]; }
 
+/** Write one byte to the memory */
 void writeByte(word addr, byte data) { memory[addr] = data; }
 
+/** Read two consecutive bytes (16-bit full address) from the memory */
 word readWord(word addr) { return (memory[addr + 1] << 8) | memory[addr]; }
 
+/** Set/Reset negative flag */
 void setNegativeFlag(bool value) {
     if (value)
         PS |= 0x80;
@@ -65,6 +75,7 @@ void setNegativeFlag(bool value) {
         PS &= 0x7F;
 }
 
+/** Set/Reset overflow flag */
 void setOverflowFlag(bool value) {
     if (value)
         PS |= 0x40;
@@ -72,6 +83,7 @@ void setOverflowFlag(bool value) {
         PS &= 0xBF;
 }
 
+/** Set/Reset zero flag */
 void setZeroFlag(bool value) {
     if (value)
         PS |= 0x02;
@@ -79,6 +91,7 @@ void setZeroFlag(bool value) {
         PS &= 0xFD;
 }
 
+/** Set/Reset carry flag */
 void setCarryFlag(bool value) {
     if (value)
         PS |= 0x01;
@@ -87,6 +100,10 @@ void setCarryFlag(bool value) {
 }
 
 /* Decoders */
+
+/** Validators */
+bool validateOpcode(byte aaa, byte bbb, byte validAddrModes[]) { return validAddrModes[aaa] & (1 << bbb); }
+
 /** Decode Group 1 Address Mode */
 word decodeG1Address(byte bbb) {
     word addr;
@@ -140,6 +157,7 @@ word decodeG1Address(byte bbb) {
 
 /** Execute Group 1 Instructions */
 void executeG1(byte aaa, word addr) {
+    // TODO: Some of the instruction doesn't have all addressing types
     switch (aaa) {
         case 0:  // ORA
             ORA(addr);
@@ -190,22 +208,31 @@ void execute() {
     else {
         // Three main groups of instructions
         // Bit patterns of the form aaabbbcc.
-        // The aaa and cc bits determine the opcode, and the bbb bits determine the addressing mode.
+        // The aaa and cc bits determine the opcode,
+        // and the bbb bits determine the addressing mode.
 
         byte aaa = opcode >> 5;
         byte bbb = (opcode & 0x1C) >> 2;
         byte cc = opcode & 0x03;
 
+        word addr;
         switch (cc) {
-            case 1:
-                // Group 1 instructions
+            case 1:  // Group 1 instructions
+                // Validate addressing mode exists for the instruction (NOP)
+                if (!validateOpcode(aaa, bbb, validAddrModesG1)) {
+                    fprintf(stderr, "Invalid opcode!\n");
+                    exit(1);
+                }
 
-                // Decode the addressing mode and take take the appropriate action
-                // Addressing mode is determined by the bbb bits
-                word addr = decodeG1Address(bbb);
+                addr = decodeG1Address(bbb);  // Decode the addressing mode
 
+                executeG1(aaa, addr);  // Execute the instruction
+                break;
+            case 2:  // Group 2 instructions
+                // Decode the addressing mode
+                // addr = decodeG2Address(bbb);
                 // Execute the instruction
-                executeG1(aaa, addr);
+                // executeG2(aaa, addr);
                 break;
             default:
                 fprintf(stderr, "Invalid cc value: %d\n", cc);

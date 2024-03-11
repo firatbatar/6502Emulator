@@ -37,8 +37,9 @@ void resetMemory();
 void setMemory(byte newMem[]);
 void initlizeCPU(byte mem[]);
 
-byte readByte(word addr);
-void writeByte(word addr, byte data);
+byte readMemory(word addr);
+byte readByte(byte *addr);
+void writeByte(byte *addr, byte data);
 word readWord(word addr);
 void setNegativeFlag(bool value);
 void setOverflowFlag(bool value);
@@ -47,19 +48,30 @@ void setCarryFlag(bool value);
 
 bool validateOpcode(byte aaa, byte bbb, byte validAddrModes[]);
 
-word decodeG1Address(byte bbb);
+byte *decodeG1Address(byte bbb);
+byte *decodeG2Address(byte bbb);
 
-void executeG1(byte aaa, word addr);
+void executeG1(byte aaa, byte *addr);
+void executeG2(byte aaa, byte *addr);
 
 void execute();
 
-void ORA(word addr);
-void AND(word addr);
-void EOR(word addr);
-void ADC(word addr);
-void STA(word addr);
-void LDA(word addr);
-void CMP(word addr);
-void SBC(word addr);
+void ORA(byte *addr);
+void AND(byte *addr);
+void EOR(byte *addr);
+void ADC(byte *addr);
+void STA(byte *addr);
+void LDA(byte *addr);
+void CMP(byte *addr);
+void SBC(byte *addr);
+
+// void ASL(byte *addr);
+// void ROL(byte *addr);
+// void LSR(byte *addr);
+// void ROR(byte *addr);
+// void STX(byte *addr);
+// void LDX(byte *addr);
+// void DEC(byte *addr);
+// void INC(byte *addr);
 
 #endif

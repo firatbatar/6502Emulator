@@ -59,10 +59,13 @@ void initlizeCPU(byte mem[]) {
 /* General Purpose Functionalities */
 
 /** Read one byte from the memory */
-byte readByte(word addr) { return memory[addr]; }
+byte readMemory(word addr) { return memory[addr]; }
 
-/** Write one byte to the memory */
-void writeByte(word addr, byte data) { memory[addr] = data; }
+/** Read one byte from the given address */
+byte readByte(byte *addr) { return *addr; }
+
+/** Write one byte to the given address */
+void writeByte(byte *addr, byte data) { *addr = data; }
 
 /** Read two consecutive bytes (16-bit full address) from the memory */
 word readWord(word addr) { return (memory[addr + 1] << 8) | memory[addr]; }
@@ -105,17 +108,17 @@ void setCarryFlag(bool value) {
 bool validateOpcode(byte aaa, byte bbb, byte validAddrModes[]) { return validAddrModes[aaa] & (1 << bbb); }
 
 /** Decode Group 1 Address Mode */
-word decodeG1Address(byte bbb) {
+byte *decodeG1Address(byte bbb) {
     word addr;
     switch (bbb) {
         case 0:  // (Indirect, X)
-            addr = readByte(PC) + X;
+            addr = readMemory(PC) + X;
             addr &= 0xFF;  // The address calculation wraps around
             addr = readWord(addr);
             PC++;
             break;
         case 1:  // Zero Page
-            addr = readByte(PC);
+            addr = readMemory(PC);
             PC++;
             break;
         case 2:  // Immediate
@@ -127,13 +130,13 @@ word decodeG1Address(byte bbb) {
             PC += 2;
             break;
         case 4:  // (Indirect), Y
-            addr = readByte(PC);
+            addr = readMemory(PC);
             addr = readWord(addr);
             addr += Y;
             PC++;
             break;
         case 5:  // Zero Page, X
-            addr = (readByte(PC) + X);
+            addr = (readMemory(PC) + X);
             addr &= 0xFF;  // The address calculation wraps around
             PC++;
             break;
@@ -150,13 +153,49 @@ word decodeG1Address(byte bbb) {
             exit(1);
     }
 
-    return addr;
+    return memory + addr;
+}
+
+/** Decode Group 2 Address Mode */
+byte *decodeG2Address(byte bbb) {
+    word addr;
+    switch (bbb) {
+        case 0:  // Immediate
+            addr = PC;
+            PC++;
+            break;
+        case 1:  // Zero Page
+            addr = readMemory(PC);
+            PC++;
+            break;
+        case 2:  // Accumulator
+            return &A;
+            break;
+        case 3:  // Absolute
+            addr = readWord(PC);
+            PC += 2;
+            break;
+        case 4:  // Zero Page, X
+            addr = (readMemory(PC) + X);
+            addr &= 0xFF;  // The address calculation wraps around
+            PC++;
+            break;
+        case 5:  // Absolute, X
+            addr = readWord(PC) + X;
+            PC += 2;
+            break;
+        default:
+            fprintf(stderr, "Invalid bbb value: %d\n", bbb);
+            exit(1);
+    }
+
+    return memory + addr;
 }
 
 /* Executers */
 
 /** Execute Group 1 Instructions */
-void executeG1(byte aaa, word addr) {
+void executeG1(byte aaa, byte *addr) {
     // TODO: Some of the instruction doesn't have all addressing types
     switch (aaa) {
         case 0:  // ORA
@@ -182,6 +221,40 @@ void executeG1(byte aaa, word addr) {
             break;
         case 7:  // SBC
             SBC(addr);
+            break;
+        default:
+            fprintf(stderr, "Invalid aaa value: %d\n", aaa);
+            exit(1);
+    }
+}
+
+/** Execute Group 2 Instructions */
+void executeG2(byte aaa, byte *addr) {
+    // TODO: Some of the instruction doesn't have all addressing types
+    switch (aaa) {
+        case 0:  // ASL
+            // ASL(addr);
+            break;
+        case 1:  // ROL
+            // ROL(addr);
+            break;
+        case 2:  // LSR
+            // LSR(addr);
+            break;
+        case 3:  // ROR
+            // ROR(addr);
+            break;
+        case 4:  // STX
+            // STX(addr);
+            break;
+        case 5:  // LDX
+            // LDX(addr);
+            break;
+        case 6:  // DEC
+            // DEC(addr);
+            break;
+        case 7:  // INC
+            // INC(addr);
             break;
         default:
             fprintf(stderr, "Invalid aaa value: %d\n", aaa);
@@ -215,7 +288,7 @@ void execute() {
         byte bbb = (opcode & 0x1C) >> 2;
         byte cc = opcode & 0x03;
 
-        word addr;
+        byte *addr;
         switch (cc) {
             case 1:  // Group 1 instructions
                 // Validate addressing mode exists for the instruction (NOP)
@@ -243,27 +316,24 @@ void execute() {
 
 /* Instructions */
 /** An inclusive OR is performed, bit by bit, on the accumulator contents using the contents of a byte of memory. */
-void ORA(word addr) {
-    byte data = readByte(addr);
-    A |= data;
+void ORA(byte *addr) {
+    A |= (*addr);
 
     setZeroFlag(A == 0);
     setNegativeFlag(A & 0x80);
 }
 
 /** A logical AND is performed, bit by bit, on the accumulator contents using the contents of a byte of memory. */
-void AND(word addr) {
-    byte data = readByte(addr);
-    A &= data;
+void AND(byte *addr) {
+    A &= (*addr);
 
     setZeroFlag(A == 0);
     setNegativeFlag(A & 0x80);
 }
 
 /** An exclusive OR is performed, bit by bit, on the accumulator contents using the contents of a byte of memory. */
-void EOR(word addr) {
-    byte data = readByte(addr);
-    A ^= data;
+void EOR(byte *addr) {
+    A ^= (*addr);
 
     setZeroFlag(A == 0);
     setNegativeFlag(A & 0x80);
@@ -271,38 +341,34 @@ void EOR(word addr) {
 
 /** This instruction adds the contents of a memory location to the accumulator together with the carry bit. If overflow occurs the carry bit is set, this
  * enables multiple byte addition to be performed. */
-void ADC(word addr) {
+void ADC(byte *addr) {
     // TODO: No decimal mode
 
-    byte data = readByte(addr);
-
-    word result = A + data + C;
+    word result = A + (*addr) + C;
     byte oldA = A;  // Keep the old A for overflow
     A = result & 0xFF;
 
     setZeroFlag(A == 0);
     setNegativeFlag(A & 0x80);
-    setCarryFlag(result & 0x0100);                                           // Set the carry flag if ninth bit is 1
-    setOverflowFlag(((~(oldA ^ data)) & 0x80) && ((oldA ^ result) & 0x80));  // Set the overflow flag
-                                                                             // if same signed operands result in inverse sign
+    setCarryFlag(result & 0x0100);                                              // Set the carry flag if ninth bit is 1
+    setOverflowFlag(((~(oldA ^ (*addr))) & 0x80) && ((oldA ^ result) & 0x80));  // Set the overflow flag
+                                                                                // if same signed operands result in inverse sign
 }
 
 /** Stores the contents of the accumulator into memory. */
-void STA(word addr) { writeByte(addr, A); }
+void STA(byte *addr) { writeByte(addr, A); }
 
 /** Loads a byte of memory into the accumulator setting the zero and negative flags as appropriate. */
-void LDA(word addr) {
-    byte data = readByte(addr);
-    A = data;
+void LDA(byte *addr) {
+    A = (*addr);
 
     setZeroFlag(A == 0);
     setNegativeFlag(A & 0x80);
 }
 
 /** This instruction compares the contents of the accumulator with another memory held value and sets the zero and carry flags as appropriate. */
-void CMP(word addr) {
-    byte data = readByte(addr);
-    byte result = A - data;
+void CMP(byte *addr) {
+    byte result = A - (*addr);
 
     setZeroFlag(A == 0);
     setNegativeFlag(A & 0x80);
@@ -311,17 +377,15 @@ void CMP(word addr) {
 
 /** This instruction subtracts the contents of a memory location to the accumulator together with the not of the carry bit. If overflow occurs the carry bit is
  * clear, this enables multiple byte subtraction to be performed. */
-void SBC(word addr) {
-    byte data = memory[addr];
-
-    byte result = A - data - ~C;
+void SBC(byte *addr) {
+    byte result = A - (*addr) - ~C;
     byte oldA = A;
     A = result;
 
     setZeroFlag(A == 0);
     setNegativeFlag(A & 0x80);
     setCarryFlag(result >= 0);
-    setOverflowFlag(((oldA ^ data) & 0x80) && ((data ^ result) & 0x80));  // Set the overflow flag
-                                                                          // if inverse signed operands result
-                                                                          // in same sign as the second operand
+    setOverflowFlag(((oldA ^ (*addr)) & 0x80) && (((*addr) ^ result) & 0x80));  // Set the overflow flag
+                                                                                // if inverse signed operands result
+                                                                                // in same sign as the second operand
 }

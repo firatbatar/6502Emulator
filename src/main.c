@@ -38,12 +38,6 @@ int main(int argc, char *argv[]) {
         break;
     }
 
-    newMem[0xFFFC] = 0x42;
-    newMem[0xFFFD] = 0x42;
-    newMem[0x4242] = INS_LDX_IM;
-    newMem[0x4243] = 0x01;
-    newMem[0x4244] = 0x9E;
-
     initlizeCPU(newMem);
 
 

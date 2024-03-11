@@ -48,11 +48,11 @@ void setCarryFlag(bool value);
 
 bool validateOpcode(byte aaa, byte bbb, byte validAddrModes[]);
 
-byte *decodeG1Address(byte bbb);
-byte *decodeG2Address(byte bbb, byte aaa);
+byte *decodeG1AddressMode(byte bbb);
+byte *decodeG2AddressMode(byte bbb, byte aaa);
 
-void executeG1(byte aaa, byte *addr);
-void executeG2(byte aaa, byte *addr);
+void decodeG1Instruction(byte aaa, byte *addr);
+void decodeG2Instruction(byte aaa, byte *addr);
 
 void execute();
 

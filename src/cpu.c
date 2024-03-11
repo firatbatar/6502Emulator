@@ -110,7 +110,7 @@ void setCarryFlag(bool value) {
 bool validateOpcode(byte aaa, byte bbb, byte validAddrModes[]) { return validAddrModes[aaa] & (1 << bbb); }
 
 /** Decode Group 1 Address Mode */
-byte *decodeG1Address(byte bbb) {
+byte *decodeG1AddressMode(byte bbb) {
     word addr;
     switch (bbb) {
         case 0:  // (Indirect, X)
@@ -159,7 +159,7 @@ byte *decodeG1Address(byte bbb) {
 }
 
 /** Decode Group 2 Address Mode */
-byte *decodeG2Address(byte bbb, byte aaa) {
+byte *decodeG2AddressMode(byte bbb, byte aaa) {
     word addr;
     switch (bbb) {
         case 0:  // Immediate
@@ -201,7 +201,7 @@ byte *decodeG2Address(byte bbb, byte aaa) {
 /* Executers */
 
 /** Execute Group 1 Instructions */
-void executeG1(byte aaa, byte *addr) {
+void decodeG1Instruction(byte aaa, byte *addr) {
     // TODO: Some of the instruction doesn't have all addressing types
     switch (aaa) {
         case 0:  // ORA
@@ -235,7 +235,7 @@ void executeG1(byte aaa, byte *addr) {
 }
 
 /** Execute Group 2 Instructions */
-void executeG2(byte aaa, byte *addr) {
+void decodeG2Instruction(byte aaa, byte *addr) {
     // TODO: Some of the instruction doesn't have all addressing types
     switch (aaa) {
         case 0:  // ASL
@@ -303,8 +303,8 @@ void execute() {
                     exit(1);
                 }
 
-                addr = decodeG1Address(bbb);  // Decode the addressing mode
-                executeG1(aaa, addr);         // Execute the instruction
+                addr = decodeG1AddressMode(bbb);  // Decode the addressing mode
+                decodeG1Instruction(aaa, addr);         // Execute the instruction
                 break;
             case 2:  // Group 2 instructions
                 // Validate addressing mode exists for the instruction (NOP)
@@ -313,8 +313,8 @@ void execute() {
                     exit(1);
                 }
 
-                addr = decodeG2Address(bbb, aaa);  // Decode the addressing mode
-                executeG2(aaa, addr);         // Execute the instruction
+                addr = decodeG2AddressMode(bbb, aaa);  // Decode the addressing mode
+                decodeG2Instruction(aaa, addr);         // Execute the instruction
                 break;
             default:
                 fprintf(stderr, "Invalid cc value: %d\n", cc);

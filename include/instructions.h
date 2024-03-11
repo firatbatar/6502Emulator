@@ -75,4 +75,49 @@
 #define INS_SBC_INDX 0xE1
 #define INS_SBC_INDY 0xF1
 
+/* Group 2 */
+#define INS_ASL_ZP 0x06
+#define INS_ASL_A 0x0A
+#define INS_ASL_ABS 0x0E
+#define INS_ASL_ZPX 0x16
+#define INS_ASL_ABSX 0x1E
+
+#define INS_ROL_ZP 0x26
+#define INS_ROL_A 0x2A
+#define INS_ROL_ABS 0x2E
+#define INS_ROL_ZPX 0x36
+#define INS_ROL_ABSX 0x3E
+
+#define INS_LSR_ZP 0x46
+#define INS_LSR_A 0x4A
+#define INS_LSR_ABS 0x4E
+#define INS_LSR_ZPX 0x56
+#define INS_LSR_ABSX 0x5E
+
+#define INS_ROR_ZP 0x66
+#define INS_ROR_A 0x6A
+#define INS_ROR_ABS 0x6E
+#define INS_ROR_ZPX 0x76
+#define INS_ROR_ABSX 0x7E
+
+#define INS_STX_ZP 0x86
+#define INS_STX_ABS 0x8E
+#define INS_STX_ZPY 0x96
+
+#define INS_LDX_IM 0xA2
+#define INS_LDX_ZP 0xA6
+#define INS_LDX_ABS 0xAE
+#define INS_LDX_ZPY 0xB6
+#define INS_LDX_ABSY 0xBE
+
+#define INS_DEC_ZP 0xC6
+#define INS_DEC_ABS 0xCE
+#define INS_DEC_ZPX 0xD6
+#define INS_DEC_ABSX 0xDE
+
+#define INS_INC_ZP 0xE6
+#define INS_INC_ABS 0xEE
+#define INS_INC_ZPX 0xF6
+#define INS_INC_ABSX 0xFE
+
 #endif

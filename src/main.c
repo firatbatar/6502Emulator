@@ -40,23 +40,21 @@ int main(int argc, char *argv[]) {
 
     newMem[0xFFFC] = 0x42;
     newMem[0xFFFD] = 0x42;
-    newMem[0x4242] = INS_LDA_IM;
+    newMem[0x4242] = INS_LDX_IM;
     newMem[0x4243] = 0x01;
-    newMem[0x4244] = INS_ADC_IM;
-    newMem[0x4245] = 0x10;
-    newMem[0x4246] = INS_STA_ZP;
-    newMem[0x4247] = 0x40;
+    newMem[0x4244] = 0x9E;
 
     initlizeCPU(newMem);
 
-    int numOfInstructions = 3;
+
+    int numOfInstructions = 2;
 
     for (int i = 0; i < numOfInstructions; i++) {
         execute();
     }
 
-    printf("A: 0x%02X\n", A);
-    printf("mem: 0x%02X\n", memory[0x0040]);
+    printf("X: 0x%02X\n", X);
+    printf("mem: 0x%02X\n", memory[0x0012]);
 
     return 0;
 }

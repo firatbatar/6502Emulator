@@ -18,6 +18,8 @@ byte memory[0x10000];
 but not all instructions are able to use all */
 // Valid addressing modes for G1
 byte validAddrModesG1[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFB, 0xFF, 0xFF, 0xFF};
+// Valid addressing modes for G2
+byte validAddrModesG2[] = {0xFE, 0xFE, 0xFE, 0xFE, 0x7A, 0xFB, 0xFA, 0xFA};
 
 void resetCPU() {
     // Set the program counter to the reset vector
@@ -157,7 +159,7 @@ byte *decodeG1Address(byte bbb) {
 }
 
 /** Decode Group 2 Address Mode */
-byte *decodeG2Address(byte bbb) {
+byte *decodeG2Address(byte bbb, byte aaa) {
     word addr;
     switch (bbb) {
         case 0:  // Immediate
@@ -175,13 +177,17 @@ byte *decodeG2Address(byte bbb) {
             addr = readWord(PC);
             PC += 2;
             break;
-        case 4:  // Zero Page, X
-            addr = (readMemory(PC) + X);
+        case 5:  // Zero Page, X / Zero Page, Y
+            addr = readMemory(PC);
+            // On STX and LDX ZP,X becomes ZP,Y
+            addr += (aaa == 4 || aaa == 5) ? Y : X;
             addr &= 0xFF;  // The address calculation wraps around
             PC++;
             break;
-        case 5:  // Absolute, X
-            addr = readWord(PC) + X;
+        case 7:  // Absolute, X / Absolute Y
+            addr = readWord(PC);
+            // On LDX ABS,X becomes ABS,Y
+            addr += (aaa == 5) ? Y : X;
             PC += 2;
             break;
         default:
@@ -233,28 +239,28 @@ void executeG2(byte aaa, byte *addr) {
     // TODO: Some of the instruction doesn't have all addressing types
     switch (aaa) {
         case 0:  // ASL
-            // ASL(addr);
+            ASL(addr);
             break;
         case 1:  // ROL
-            // ROL(addr);
+            ROL(addr);
             break;
         case 2:  // LSR
-            // LSR(addr);
+            LSR(addr);
             break;
         case 3:  // ROR
-            // ROR(addr);
+            ROR(addr);
             break;
         case 4:  // STX
-            // STX(addr);
+            STX(addr);
             break;
         case 5:  // LDX
-            // LDX(addr);
+            LDX(addr);
             break;
         case 6:  // DEC
-            // DEC(addr);
+            DEC(addr);
             break;
         case 7:  // INC
-            // INC(addr);
+            INC(addr);
             break;
         default:
             fprintf(stderr, "Invalid aaa value: %d\n", aaa);
@@ -298,14 +304,17 @@ void execute() {
                 }
 
                 addr = decodeG1Address(bbb);  // Decode the addressing mode
-
-                executeG1(aaa, addr);  // Execute the instruction
+                executeG1(aaa, addr);         // Execute the instruction
                 break;
             case 2:  // Group 2 instructions
-                // Decode the addressing mode
-                // addr = decodeG2Address(bbb);
-                // Execute the instruction
-                // executeG2(aaa, addr);
+                // Validate addressing mode exists for the instruction (NOP)
+                if (!validateOpcode(aaa, bbb, validAddrModesG2)) {
+                    fprintf(stderr, "Invalid opcode!\n");
+                    exit(1);
+                }
+
+                addr = decodeG2Address(bbb, aaa);  // Decode the addressing mode
+                executeG2(aaa, addr);         // Execute the instruction
                 break;
             default:
                 fprintf(stderr, "Invalid cc value: %d\n", cc);
@@ -388,4 +397,80 @@ void SBC(byte *addr) {
     setOverflowFlag(((oldA ^ (*addr)) & 0x80) && (((*addr) ^ result) & 0x80));  // Set the overflow flag
                                                                                 // if inverse signed operands result
                                                                                 // in same sign as the second operand
+}
+
+/** This operation shifts all the bits of the accumulator or memory contents one bit left. Bit 0 is set to 0 and bit 7 is placed in the carry flag. */
+void ASL(byte *addr) {
+    byte newCarry = (*addr) & 0x80;
+    byte newVal = (*addr) << 1;
+
+    writeByte(addr, newVal);
+
+    setZeroFlag(newVal == 0);
+    setNegativeFlag(newVal & 0x80);
+    setCarryFlag(newCarry);
+}
+
+/** Move each of the bits in either A or M one place to the left. Bit 0 is filled with the current value of the carry flag whilst the old bit 7 becomes the new
+ * carry flag value. */
+void ROL(byte *addr) {
+    byte newCarry = (*addr) & 0x80;
+    byte newVal = ((*addr) << 1) | (0x01 & C);
+
+    writeByte(addr, newVal);
+    setZeroFlag(newVal == 0);
+    setNegativeFlag(newVal & 0x80);
+    setCarryFlag(newCarry);
+}
+
+/** Each of the bits in A or M is shift one place to the right. The bit that was in bit 0 is shifted into the carry flag. Bit 7 is set to zero. */
+void LSR(byte *addr) {
+    byte newCarry = (*addr) & 0x01;
+    byte newVal = (*addr) >> 1;
+
+    writeByte(addr, newVal);
+    setZeroFlag(newVal == 0);
+    setNegativeFlag(newVal & 0x80);
+    setCarryFlag(newCarry);
+}
+
+/** Move each of the bits in either A or M one place to the right. Bit 7 is filled with the current value of the carry flag whilst the old bit 0 becomes the new
+ * carry flag value. */
+void ROR(byte *addr) {
+    byte newCarry = (*addr) & 0x01;
+    byte newVal = ((*addr) >> 1) | (0x80 & C);
+
+    writeByte(addr, newVal);
+    setZeroFlag(newVal == 0);
+    setNegativeFlag(newVal & 0x80);
+    setCarryFlag(newCarry);
+}
+
+/** Stores the contents of the X register into memory. */
+void STX(byte *addr) { writeByte(addr, X); }
+
+/** Loads a byte of memory into the X register setting the zero and negative flags as appropriate. */
+void LDX(byte *addr) {
+    X = (*addr);
+
+    setZeroFlag(X == 0);
+    setNegativeFlag(X & 0x80);
+}
+
+/** Subtracts one from the value held at a specified memory location setting the zero and negative flags as appropriate. */
+void DEC(byte *addr) {
+    byte newVal = (*addr) - 1;
+
+    writeByte(addr, newVal);
+    setZeroFlag(newVal == 0);
+    setNegativeFlag(newVal & 0x80);
+}
+
+/** Adds one to the value held at a specified memory location setting the zero and negative flags as appropriate. */
+void INC(byte *addr) {
+    byte newVal = (*addr) + 1;
+
+    writeByte(addr, newVal);
+    setZeroFlag(newVal == 0);
+    setNegativeFlag(newVal & 0x80);
 }

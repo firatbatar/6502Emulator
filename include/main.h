@@ -6,6 +6,4 @@
 #include "cpu.h"
 #include "instructions.h"
 
-void loadMemory(byte mem[], char *fileName);
-
 #endif

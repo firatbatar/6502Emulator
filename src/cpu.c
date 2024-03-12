@@ -51,11 +51,37 @@ void setMemory(byte newMem[]) {
     }
 }
 
-void initlizeCPU(byte mem[]) {
+void readMemoryFromFile(char *fileName) {
+    FILE *file = fopen(fileName, "r");
+
+    if (file == NULL) {
+        fprintf(stderr, "Can't open file!");
+        exit(1);
+    }
+
+    char m;
+    word idx = 0;
+    while (!feof(file) && idx <= 0xFFFF) {
+        m = fgetc(file);
+        memory[idx] = (int8_t)m;
+        idx++;
+    }
+
+    printf("Loaded memory from file \"%s\"\n", fileName);
+
+    fclose(file);
+}
+
+void initlizeCPU(byte mem[], char *fileName) {
     resetMemory();
     printf("Cleared existing memory.\n");
-    setMemory(mem);
+
+    if (fileName == NULL)
+        setMemory(mem);
+    else
+        readMemoryFromFile(fileName);
     printf("Set given memory.\n");
+
     resetCPU();
     printf("Reset registers. CPU is ready to run.\n");
 }

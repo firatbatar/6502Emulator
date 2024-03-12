@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
 
     initlizeCPU(newMem, fileName);
 
-    int numOfInstructions = 2;
+    int numOfInstructions = 0;
 
     for (int i = 0; i < numOfInstructions; i++) {
         execute();

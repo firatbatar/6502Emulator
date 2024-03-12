@@ -11,6 +11,15 @@ byte X = 0;
 byte Y = 0;
 byte PS = 0;
 
+// PS Flags
+#define C (PS & 0x01)  // Carry
+#define Z (PS & 0x02)  // Zero
+#define I (PS & 0x04)  // Interrupt Disable
+#define D (PS & 0x08)  // Decimal Mode
+#define B (PS & 0x10)  // Break Command
+#define V (PS & 0x40)  // Overflow
+#define N (PS & 0x80)  // Negative
+
 // Initilize the memory - From 0x0000 to 0xFFFF, 0x10000 bytes
 byte memory[0x10000];
 
@@ -23,6 +32,15 @@ byte validAddrModesG2[] = {0xAE, 0xAE, 0xAE, 0xAE, 0x2A, 0xAB, 0xAA, 0xAA};
 // Valid addressing modes for G3
 byte validAddrModesG3[] = {0x00, 0x0A, 0x08, 0x08, 0x2A, 0xAB, 0x0B, 0x0B};
 
+/* Getters */
+word const readPC() { return PC; }
+byte const readSP() { return SP; }
+byte const readA() { return A; }
+byte const readX() { return X; }
+byte const readY() { return Y; }
+byte const readPS() { return PS; }
+
+/* General Purpose Functionalities */
 void resetCPU() {
     // Set the program counter to the reset vector
     // 6502 CPU starts at 0xFFFC and 0xFFFD
@@ -76,17 +94,18 @@ void initlizeCPU(byte mem[], char *fileName) {
     resetMemory();
     printf("Cleared existing memory.\n");
 
-    if (fileName == NULL)
+    if (fileName == NULL) {
         setMemory(mem);
-    else
+        printf("Set given memory.\n");
+    }
+    else {
         readMemoryFromFile(fileName);
-    printf("Set given memory.\n");
+        printf("Load given memory.\n");
+    }
 
     resetCPU();
     printf("Reset registers. CPU is ready to run.\n");
 }
-
-/* General Purpose Functionalities */
 
 /** Read one byte from the memory */
 byte readMemory(word addr) { return memory[addr]; }

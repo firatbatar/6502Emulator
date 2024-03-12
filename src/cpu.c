@@ -33,14 +33,30 @@ byte validAddrModesG2[] = {0xAE, 0xAE, 0xAE, 0xAE, 0x2A, 0xAB, 0xAA, 0xAA};
 byte validAddrModesG3[] = {0x00, 0x0A, 0x08, 0x08, 0x2A, 0xAB, 0x0B, 0x0B};
 
 /* Getters */
-word const readPC() { return PC; }
-byte const readSP() { return SP; }
-byte const readA() { return A; }
-byte const readX() { return X; }
-byte const readY() { return Y; }
-byte const readPS() { return PS; }
+
+const word readPC() { return PC; }
+const byte readSP() { return SP; }
+const byte readA() { return A; }
+const byte readX() { return X; }
+const byte readY() { return Y; }
+const byte readPS() { return PS; }
+
+/* Setters */
+
+void writePC(word v) { PC = v; }
+void writeSP(byte v) { SP = v; }
+void writeA(byte v) { A = v; } 
+void writeX(byte v) { X = v; } 
+void writeY(byte v) { Y = v; } 
+void writePS(byte v) { PS = v; }
+
 
 /* General Purpose Functionalities */
+
+/** Set PC to reset vector 
+ * Set SP to 0xFF (0x1FF)
+ * Reset A, X, Y registers to 0
+*/
 void resetCPU() {
     // Set the program counter to the reset vector
     // 6502 CPU starts at 0xFFFC and 0xFFFD
@@ -56,13 +72,15 @@ void resetCPU() {
     Y = 0;
 }
 
-void resetMemory() {
+/** Clear all memory to 0 */
+void resetMemory(byte v) {
     // Set all the memory to 0
     for (int i = 0; i < 0x10000; i++) {
-        memory[i] = 0;
+        memory[i] = v;
     }
 }
 
+/** Set memory to the given */
 void setMemory(byte newMem[]) {
     for (int i = 0; i < 0x10000; i++) {
         memory[i] = newMem[i];
@@ -90,25 +108,32 @@ void readMemoryFromFile(char *fileName) {
     fclose(file);
 }
 
+/** Clear the memory
+ * Set/Load memory
+ * Reset the CPU
+*/
 void initlizeCPU(byte mem[], char *fileName) {
-    resetMemory();
-    printf("Cleared existing memory.\n");
+    resetMemory(0);
+    // printf("Cleared existing memory.\n");
 
     if (fileName == NULL) {
         setMemory(mem);
-        printf("Set given memory.\n");
+        // printf("Set given memory.\n");
     }
     else {
         readMemoryFromFile(fileName);
-        printf("Load given memory.\n");
+        // printf("Load given memory.\n");
     }
 
     resetCPU();
-    printf("Reset registers. CPU is ready to run.\n");
+    // printf("Reset registers. CPU is ready to run.\n");
 }
 
 /** Read one byte from the memory */
 byte readMemory(word addr) { return memory[addr]; }
+
+/** Write one byte to given memory index */
+void writeMemory(word addr, byte data) { memory[addr] = data; }
 
 /** Read one byte from the given address */
 byte readByte(byte *addr) { return *addr; }

@@ -49,10 +49,11 @@ void setCarryFlag(bool value);
 bool validateOpcode(byte aaa, byte bbb, byte validAddrModes[]);
 
 byte *decodeG1AddressMode(byte bbb);
-byte *decodeG2AddressMode(byte bbb, byte aaa);
+byte *decodeG23AddressMode(byte bbb, byte aaa);
 
 void decodeG1Instruction(byte aaa, byte *addr);
 void decodeG2Instruction(byte aaa, byte *addr);
+void decodeG3Instruction(byte aaa, byte *addr);
 
 void execute();
 
@@ -73,5 +74,12 @@ void STX(byte *addr);
 void LDX(byte *addr);
 void DEC(byte *addr);
 void INC(byte *addr);
+
+void BIT(byte *addr);
+void JMP(byte *addr);
+void STY(byte *addr);
+void LDY(byte *addr);
+void CPY(byte *addr);
+void CPX(byte *addr);
 
 #endif

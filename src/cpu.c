@@ -19,7 +19,9 @@ but not all instructions are able to use all */
 // Valid addressing modes for G1
 byte validAddrModesG1[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFB, 0xFF, 0xFF, 0xFF};
 // Valid addressing modes for G2
-byte validAddrModesG2[] = {0xFE, 0xFE, 0xFE, 0xFE, 0x7A, 0xFB, 0xFA, 0xFA};
+byte validAddrModesG2[] = {0xAE, 0xAE, 0xAE, 0xAE, 0x2A, 0xAB, 0xAA, 0xAA};
+// Valid addressing modes for G3
+byte validAddrModesG3[] = {0x00, 0x0A, 0x08, 0x08, 0x2A, 0xAB, 0x0B, 0x0B};
 
 void resetCPU() {
     // Set the program counter to the reset vector
@@ -158,8 +160,8 @@ byte *decodeG1AddressMode(byte bbb) {
     return memory + addr;
 }
 
-/** Decode Group 2 Address Mode */
-byte *decodeG2AddressMode(byte bbb, byte aaa) {
+/** Decode Group 2 and Group 3 Address Mode */
+byte *decodeG23AddressMode(byte bbb, byte aaa) {
     word addr;
     switch (bbb) {
         case 0:  // Immediate
@@ -179,7 +181,7 @@ byte *decodeG2AddressMode(byte bbb, byte aaa) {
             break;
         case 5:  // Zero Page, X / Zero Page, Y
             addr = readMemory(PC);
-            // On STX and LDX ZP,X becomes ZP,Y
+            // On STX and LDX ZP,X becomes ZP,Y (only in G2)
             addr += (aaa == 4 || aaa == 5) ? Y : X;
             addr &= 0xFF;  // The address calculation wraps around
             PC++;
@@ -187,6 +189,7 @@ byte *decodeG2AddressMode(byte bbb, byte aaa) {
         case 7:  // Absolute, X / Absolute Y
             addr = readWord(PC);
             // On LDX ABS,X becomes ABS,Y
+            // Only in G2
             addr += (aaa == 5) ? Y : X;
             PC += 2;
             break;
@@ -202,7 +205,6 @@ byte *decodeG2AddressMode(byte bbb, byte aaa) {
 
 /** Execute Group 1 Instructions */
 void decodeG1Instruction(byte aaa, byte *addr) {
-    // TODO: Some of the instruction doesn't have all addressing types
     switch (aaa) {
         case 0:  // ORA
             ORA(addr);
@@ -236,7 +238,6 @@ void decodeG1Instruction(byte aaa, byte *addr) {
 
 /** Execute Group 2 Instructions */
 void decodeG2Instruction(byte aaa, byte *addr) {
-    // TODO: Some of the instruction doesn't have all addressing types
     switch (aaa) {
         case 0:  // ASL
             ASL(addr);
@@ -261,6 +262,37 @@ void decodeG2Instruction(byte aaa, byte *addr) {
             break;
         case 7:  // INC
             INC(addr);
+            break;
+        default:
+            fprintf(stderr, "Invalid aaa value: %d\n", aaa);
+            exit(1);
+    }
+}
+
+/** Execute Group 3 Instructions */
+void decodeG3Instruction(byte aaa, byte *addr) {
+    switch (aaa) {
+        case 1:  // BIT
+            BIT(addr);
+            break;
+        case 2:  // JMP
+            JMP(addr);
+            break;
+        case 3:  // JMP()
+            addr = memory + (((*addr) << 8) | (*(addr + 1)));
+            JMP(addr);
+            break;
+        case 4:  // STY
+            STY(addr);
+            break;
+        case 5:  // LDY
+            LDY(addr);
+            break;
+        case 6:  // CPY
+            CPY(addr);
+            break;
+        case 7:  // CPX
+            CPX(addr);
             break;
         default:
             fprintf(stderr, "Invalid aaa value: %d\n", aaa);
@@ -304,7 +336,7 @@ void execute() {
                 }
 
                 addr = decodeG1AddressMode(bbb);  // Decode the addressing mode
-                decodeG1Instruction(aaa, addr);         // Execute the instruction
+                decodeG1Instruction(aaa, addr);   // Execute the instruction
                 break;
             case 2:  // Group 2 instructions
                 // Validate addressing mode exists for the instruction (NOP)
@@ -313,8 +345,28 @@ void execute() {
                     exit(1);
                 }
 
-                addr = decodeG2AddressMode(bbb, aaa);  // Decode the addressing mode
+                addr = decodeG23AddressMode(bbb, aaa);  // Decode the addressing mode
                 decodeG2Instruction(aaa, addr);         // Execute the instruction
+                break;
+            case 0:  // Group 3, branch, and inturrupt/subroutine instructions
+                if (bbb == 4) {
+                    // Branch
+                }
+                else if (bbb == 0 && (aaa == 0 || aaa == 1 || aaa == 2 || aaa == 3)) {
+                    // Inturrupt/subroutine
+                    // 0x00, 0x20, 0x40, 0x60
+                }
+                else {
+                    // Validate addressing mode for G3
+                    if (!validateOpcode(aaa, bbb, validAddrModesG3)) {
+                        fprintf(stderr, "Invalid opcode!\n");
+                        exit(1);
+                    }
+
+                    addr = decodeG23AddressMode(bbb, -1);  // Decode the addressing mode
+                                                           // Pass -1 for second parameter to avoid X-Y change needed for G2
+                    decodeG3Instruction(aaa, addr);        // Execute the instruction
+                }
                 break;
             default:
                 fprintf(stderr, "Invalid cc value: %d\n", cc);
@@ -473,4 +525,46 @@ void INC(byte *addr) {
     writeByte(addr, newVal);
     setZeroFlag(newVal == 0);
     setNegativeFlag(newVal & 0x80);
+}
+
+/** This instructions is used to test if one or more bits are set in a target memory location. The mask pattern in A is ANDed with the value in memory to set or
+ * clear the zero flag, but the result is not kept. Bits 7 and 6 of the value from memory are copied into the N and V flags. */
+void BIT(byte *addr) {
+    byte result = A & (*addr);
+
+    setZeroFlag(result == 0);         // Set the zero flag if the result is zero
+    setNegativeFlag((*addr) & 0x80);  // 7th bit of the memory
+    setOverflowFlag((*addr) & 0x40);  // 6th bit of the memory
+}
+
+/** Sets the program counter to the address specified by the operand. */
+void JMP(byte *addr) { PC = (word)(addr - memory); }
+
+/** Stores the contents of the Y register into memory. */
+void STY(byte *addr) { writeByte(addr, Y); }
+
+/** Loads a byte of memory into the Y register setting the zero and negative flags as appropriate. */
+void LDY(byte *addr) {
+    Y = (*addr);
+
+    setZeroFlag(Y == 0);
+    setNegativeFlag(Y & 0x80);
+}
+
+/** This instruction compares the contents of the Y register with another memory held value and sets the zero and carry flags as appropriate. */
+void CPY(byte *addr) {
+    byte result = Y - (*addr);
+
+    setZeroFlag(Y == 0);
+    setNegativeFlag(Y & 0x80);
+    setCarryFlag(result >= 0);  // Set the carry flag if the data >= accumulator
+}
+
+/** This instruction compares the contents of the X register with another memory held value and sets the zero and carry flags as appropriate. */
+void CPX(byte *addr) {
+    byte result = X - (*addr);
+
+    setZeroFlag(X == 0);
+    setNegativeFlag(X & 0x80);
+    setCarryFlag(result >= 0);  // Set the carry flag if the data >= accumulator
 }

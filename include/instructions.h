@@ -120,4 +120,30 @@
 #define INS_INC_ZPX 0xF6
 #define INS_INC_ABSX 0xFE
 
+/* Group 3 */
+#define INS_BIT_ZP 0x24
+#define INS_BIT_ABS 0x2C
+
+#define INS_JMP_ABS 0x4C
+
+#define INS_JMPABS_ABS 0x6C
+
+#define INS_STY_ZP 0x84
+#define INS_STY_ABS 0x8C
+#define INS_STY_ZPX 0x94
+
+#define INS_LDY_IM 0xA0
+#define INS_LDY_ZP 0xA4
+#define INS_LDY_ABS 0xAC
+#define INS_LDY_ZPX 0xB4
+#define INS_LDY_ABSX 0xBC
+
+#define INS_CPY_IM 0xC0
+#define INS_CPY_ZP 0xC4
+#define INS_CPY_ABS 0xCC
+
+#define INS_CPX_IM 0xE0
+#define INS_CPX_ZP 0xE4
+#define INS_CPX_ABS 0xEC
+
 #endif

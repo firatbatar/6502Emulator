@@ -2,13 +2,14 @@
 #define _TEST_GROUP_ONE_H
 
 /**
- * ORA performs an inclusive or on the accumulator
- * Result is written into the accumulator
+ * EOR performs an exclusive or on the accumulator
+ * Result is written in to the accumulator
  * Zero and Negative flag are affected
  */
 
-/** Each test will perform three ORA instructions
- * 1. ORA with (0000 0000) -> FIRST_DATA
+/** Each test will perform three EOR instructions
+ * Accumulator is set to (1111 1111) at the start
+ * 1. ORA with (1111 1111) -> FIRST_DATA
  * 2. ORA with (0101 0101) -> SECOND_DATA
  * 3. ORA with (1010 1010) -> THIRD_DATA
  */
@@ -23,19 +24,19 @@
 #include "../../src/unity.h"
 #include "../../src/unity_internals.h"
 
-#define SETUP_CONFIG
+#define SETUP_CONFIG writeA(0xFF);
 #define TEARDOWN_CONFIG
 
-#define INSTRUCTION_IM INS_ORA_IM
-#define INSTRUCTION_ZP INS_ORA_ZP
-#define INSTRUCTION_ZPX INS_ORA_ZPX
-#define INSTRUCTION_ABS INS_ORA_ABS
-#define INSTRUCTION_ABSX INS_ORA_ABSX
-#define INSTRUCTION_ABSY INS_ORA_ABSY
-#define INSTRUCTION_INDX INS_ORA_INDX
-#define INSTRUCTION_INDY INS_ORA_INDY
+#define INSTRUCTION_IM INS_EOR_IM
+#define INSTRUCTION_ZP INS_EOR_ZP
+#define INSTRUCTION_ZPX INS_EOR_ZPX
+#define INSTRUCTION_ABS INS_EOR_ABS
+#define INSTRUCTION_ABSX INS_EOR_ABSX
+#define INSTRUCTION_ABSY INS_EOR_ABSY
+#define INSTRUCTION_INDX INS_EOR_INDX
+#define INSTRUCTION_INDY INS_EOR_INDY
 
-#define FIRST_DATA 0x00
+#define FIRST_DATA 0xFF
 #define SECOND_DATA 0x55
 #define THIRD_DATA 0xAA
 

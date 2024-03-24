@@ -10,13 +10,13 @@ The instructions that have tests are marked with :white_check_mark:.
 _Note that the list only includes currently implemented instructions._
 1. **`groupOne`** includes:
     - :white_check_mark: ORA
-    - AND
-    - EOR
-    - ADC
+    - :white_check_mark: AND
+    - :white_check_mark: EOR
+    - :white_check_mark: ADC
     - STA
     - LDA
     - CMP
-    - SBC
+    - :white_check_mark: SBC
 2. **`groupTwo`** includes:
     - ASL
     - ROL

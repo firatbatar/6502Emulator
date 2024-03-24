@@ -60,11 +60,11 @@
 #define SECOND_INSTRUCTION_TEST(addressing)                                                  \
     {                                                                                        \
         char msg1[100], msg2[100], msg3[100], msg4[100], msg5[100];                          \
-        sprintf(msg1, "A isn't right in first instruction for %s.", addressing);             \
-        sprintf(msg2, "Carry flag isn't right in first instruction for %s.", addressing);    \
-        sprintf(msg3, "Overflow flag isn't right in first instruction for %s.", addressing); \
-        sprintf(msg4, "Zero flag isn't right in first instruction for %s.", addressing);     \
-        sprintf(msg5, "Negative flag isn't right in first instruction for %s.", addressing); \
+        sprintf(msg1, "A isn't right in second instruction for %s.", addressing);             \
+        sprintf(msg2, "Carry flag isn't right in second instruction for %s.", addressing);    \
+        sprintf(msg3, "Overflow flag isn't right in second instruction for %s.", addressing); \
+        sprintf(msg4, "Zero flag isn't right in second instruction for %s.", addressing);     \
+        sprintf(msg5, "Negative flag isn't right in second instruction for %s.", addressing); \
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x0F, readA(), msg1);                                 \
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & CM, msg2);                           \
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & VM, msg3);                           \
@@ -75,11 +75,11 @@
 #define THIRD_INSTRUCTION_TEST(addressing)                                                   \
     {                                                                                        \
         char msg1[100], msg2[100], msg3[100], msg4[100], msg5[100];                          \
-        sprintf(msg1, "A isn't right in first instruction for %s.", addressing);             \
-        sprintf(msg2, "Carry flag isn't right in first instruction for %s.", addressing);    \
-        sprintf(msg3, "Overflow flag isn't right in first instruction for %s.", addressing); \
-        sprintf(msg4, "Zero flag isn't right in first instruction for %s.", addressing);     \
-        sprintf(msg5, "Negative flag isn't right in first instruction for %s.", addressing); \
+        sprintf(msg1, "A isn't right in third instruction for %s.", addressing);             \
+        sprintf(msg2, "Carry flag isn't right in third instruction for %s.", addressing);    \
+        sprintf(msg3, "Overflow flag isn't right in third instruction for %s.", addressing); \
+        sprintf(msg4, "Zero flag isn't right in third instruction for %s.", addressing);     \
+        sprintf(msg5, "Negative flag isn't right in third instruction for %s.", addressing); \
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x8E, readA(), msg1);                                 \
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & CM, msg2);                           \
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(VM, readPS() & VM, msg3);                             \

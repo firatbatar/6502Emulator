@@ -15,7 +15,7 @@ _Note that the list only includes currently implemented instructions._
     - :white_check_mark: ADC
     - STA
     - LDA
-    - CMP
+    - :white_check_mark: CMP
     - :white_check_mark: SBC
 2. **`groupTwo`** includes:
     - ASL

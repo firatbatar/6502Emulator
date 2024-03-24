@@ -45,18 +45,17 @@ const byte readPS() { return PS; }
 
 void writePC(word v) { PC = v; }
 void writeSP(byte v) { SP = v; }
-void writeA(byte v) { A = v; } 
-void writeX(byte v) { X = v; } 
-void writeY(byte v) { Y = v; } 
+void writeA(byte v) { A = v; }
+void writeX(byte v) { X = v; }
+void writeY(byte v) { Y = v; }
 void writePS(byte v) { PS = v; }
-
 
 /* General Purpose Functionalities */
 
-/** Set PC to reset vector 
+/** Set PC to reset vector
  * Set SP to 0xFF (0x1FF)
  * Reset A, X, Y registers to 0
-*/
+ */
 void resetCPU() {
     // Set the program counter to the reset vector
     // 6502 CPU starts at 0xFFFC and 0xFFFD
@@ -111,7 +110,7 @@ void readMemoryFromFile(char *fileName) {
 /** Clear the memory
  * Set/Load memory
  * Reset the CPU
-*/
+ */
 void initlizeCPU(byte mem[], char *fileName) {
     resetMemory(0);
     // printf("Cleared existing memory.\n");
@@ -501,24 +500,17 @@ void LDA(byte *addr) {
 void CMP(byte *addr) {
     byte result = A - (*addr);
 
-    setZeroFlag(A == 0);
-    setNegativeFlag(A & 0x80);
-    setCarryFlag(result >= 0);  // Set the carry flag if the data >= accumulator
+    setZeroFlag(result == 0);
+    setNegativeFlag(result & 0x80);
+    setCarryFlag(A >= (*addr));  // Set the carry flag if the data <= accumulator
 }
 
 /** This instruction subtracts the contents of a memory location to the accumulator together with the not of the carry bit. If overflow occurs the carry bit is
  * clear, this enables multiple byte subtraction to be performed. */
 void SBC(byte *addr) {
-    byte result = A - (*addr) - ~C;
-    byte oldA = A;
-    A = result;
-
-    setZeroFlag(A == 0);
-    setNegativeFlag(A & 0x80);
-    setCarryFlag(result >= 0);
-    setOverflowFlag(((oldA ^ (*addr)) & 0x80) && (((*addr) ^ result) & 0x80));  // Set the overflow flag
-                                                                                // if inverse signed operands result
-                                                                                // in same sign as the second operand
+    // Subtraction is addition with data's one's complement
+    byte complement = ~(*addr);  // One's complement of the data
+    ADC(&complement);            // Add the one's complement to the accumulator
 }
 
 /** This operation shifts all the bits of the accumulator or memory contents one bit left. Bit 0 is set to 0 and bit 7 is placed in the carry flag. */
@@ -625,16 +617,16 @@ void LDY(byte *addr) {
 void CPY(byte *addr) {
     byte result = Y - (*addr);
 
-    setZeroFlag(Y == 0);
-    setNegativeFlag(Y & 0x80);
-    setCarryFlag(result >= 0);  // Set the carry flag if the data >= accumulator
+    setZeroFlag(result == 0);
+    setNegativeFlag(result & 0x80);
+    setCarryFlag(Y >= (*addr));  // Set the carry flag if the data <= Y
 }
 
 /** This instruction compares the contents of the X register with another memory held value and sets the zero and carry flags as appropriate. */
 void CPX(byte *addr) {
     byte result = X - (*addr);
 
-    setZeroFlag(X == 0);
-    setNegativeFlag(X & 0x80);
-    setCarryFlag(result >= 0);  // Set the carry flag if the data >= accumulator
+    setZeroFlag(result == 0);
+    setNegativeFlag(result & 0x80);
+    setCarryFlag(X >= (*addr));  // Set the carry flag if the data <= X
 }

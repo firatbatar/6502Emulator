@@ -87,6 +87,6 @@
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(NM, readPS() & NM, msg5);                             \
     }
 
-#include "../templates/groupOneBase_1.h"
+#include "../templates/groupOneBase.h"
 
 #endif  // _TEST_GROUP_ONE_H

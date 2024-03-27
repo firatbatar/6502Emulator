@@ -1,6 +1,6 @@
 unity := ../../src/unity.c ../../../src/cpu.c
 
-all: ORA AND EOR ADC SBC CMP
+all: ORA AND EOR ADC STA LDA SBC CMP
 	@echo "All group one tests compiled!"
 
 ORA: $(unity) ora.c
@@ -14,6 +14,12 @@ EOR: $(unity) eor.c
 
 ADC: $(unity) adc.c
 	@gcc $(unity) adc.c -o adc.out -Wall
+
+STA: $(unity) sta.c
+	@gcc $(unity) sta.c -o sta.out -Wall
+
+LDA: $(unity) lda.c
+	@gcc $(unity) lda.c -o lda.out -Wall
 
 CMP: $(unity) cmp.c
 	@gcc $(unity) cmp.c -o cmp.out -Wall
@@ -30,6 +36,10 @@ run: clean all
 	@./eor.out
 	@echo "\nRunning ADC tests..."
 	@./adc.out
+	@echo "\nRunning STA tests..."
+	@./sta.out
+	@echo "\nRunning LDA tests..."
+	@./lda.out
 	@echo "\nRunning CMP tests..."
 	@./cmp.out
 	@echo "\nRunning SBC tests..."

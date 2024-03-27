@@ -24,8 +24,8 @@
 #include "../../src/unity.h"
 #include "../../src/unity_internals.h"
 
-#define SETUP_CONFIG writeA(0xFF);
-#define TEARDOWN_CONFIG
+#define SETUP_CONFIG_C writeA(0xFF);
+#define TEARDOWN_CONFIG_C
 
 #define INSTRUCTION_IM INS_AND_IM
 #define INSTRUCTION_ZP INS_AND_ZP
@@ -79,6 +79,6 @@
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & NM, msg3);                           \
     }
 
-#include "groupOne.c"
+#include "../templates/groupOneBase_1.h"
 
 #endif  // _TEST_GROUP_ONE_H

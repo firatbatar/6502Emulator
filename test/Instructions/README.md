@@ -2,9 +2,14 @@
 
 This directory contains unit tests for the instructions.
 
+## Test Templates
+
+Since most of the instruction do similar actions as they are performing their instruction I will write some templates to re-use.  
+Templates can be found in [`templates`](./templates/) folder.
+
 ## Folder Structure
 
-Instructions are grouped as they are in the source code. Each group of instructions has its own directory. Each instruction has its own test file.  
+Instructions are grouped as they are in the source code. Each group of instructions has its own directory. Each instruction has its own C file.  
 The instructions that have tests are marked with :white_check_mark:.
 
 _Note that the list only includes currently implemented instructions._
@@ -54,7 +59,7 @@ Each folder has its own `Makefile` to run the tests. To run the tests, navigate 
 $ make
 ```
 
-or for separete build of each test file, run
+or for separete build of each test file, use
 
 ```
 $ make [instructionName]
@@ -62,13 +67,14 @@ $ make [instructionName]
 
 This will compile the tests into separate executables, but it will not run them.
 
-To run the tests, run
+To run the tests, use
 
 ```
 $ make run
 ```
+Note that run will automatically perform a `make all` command before hand.
 
-Also note that, to clean the build files, run
+To clean the build files, run
 
 ```
 $ make clean

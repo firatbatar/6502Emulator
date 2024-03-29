@@ -92,9 +92,6 @@
         execute();                                           \
         THIRD_INSTRUCTION_TEST("ZP,X");                      \
     }
-#endif
-
-#ifdef INSTRUCTION_ZPX
 /** Test for zero page,X addressing with wrapping */
 #define ZPX_W_TEST                                          \
     {                                                       \
@@ -206,9 +203,6 @@
         execute();                                          \
         THIRD_INSTRUCTION_TEST("INDX");                     \
     }
-#endif
-
-#ifdef INSTRUCTION_INDX
 /** Test for indexed indirect addressing with wrap */
 #define INDX_W_TEST                                         \
     {                                                       \

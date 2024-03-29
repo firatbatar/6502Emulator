@@ -57,6 +57,11 @@ void test_indexed_indirect_wrap(void) { INDX_W_TEST }
 void test_indirect_indexed(void) { INDY_TEST }
 #endif
 
+#ifdef A_TEST
+/** Test for special accumulator addressing */
+void test_accumulator(void) { A_TEST }
+#endif
+
 int main(void) {
     UNITY_BEGIN();
 
@@ -92,6 +97,10 @@ int main(void) {
 
     #ifdef INDY_TEST
     RUN_TEST(test_indirect_indexed);
+    #endif
+
+    #ifdef A_TEST
+    RUN_TEST(test_accumulator);
     #endif
 
     return UNITY_END();

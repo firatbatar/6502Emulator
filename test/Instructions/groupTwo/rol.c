@@ -8,10 +8,10 @@
  * The zero flag and the negative flag are set accordingly
  */
 
-/** Each test will perform three ASL instructions
- * 1. ASL (1000 0000) -> FIRST_DATA
- * 2. ASL (0000 0000) -> SECOND_DATA
- * 3. ASL (0100 0000) -> THIRD_DATA
+/** Each test will perform three ROL instructions
+ * 1. ROL (1000 0000) -> FIRST_DATA
+ * 2. ROL (0000 0000) -> SECOND_DATA
+ * 3. ROL (0100 0000) -> THIRD_DATA
  */
 /** At the end of each instruction,
  * 1. Content: 0000 0000, Carry Flag: 1, Zero Flag: 1, Negative Flag: 0

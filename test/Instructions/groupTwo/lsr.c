@@ -7,9 +7,9 @@
  * Negative flag is always reset, Zero flag is set accordingly
  */
 
-/** Each test will perform two ASL instructions
- * 1. ASL (0000 0001) -> FIRST_DATA
- * 2. ASL (0000 0010) -> SECOND_DATA
+/** Each test will perform two LSR instructions
+ * 1. LSR (0000 0001) -> FIRST_DATA
+ * 2. LSR (0000 0010) -> SECOND_DATA
  */
 /** At the end of each instruction,
  * 1. Content: 0000 0000, Carry Flag: 1, Zero Flag: 1, Negative Flag: 0

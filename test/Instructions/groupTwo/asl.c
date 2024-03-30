@@ -1,6 +1,23 @@
 #ifndef _TEST_GROUP_TWO_H
 #define _TEST_GROUP_TWO_H
 
+/**
+ * Shifts the content to 1 bit to the left
+ * The carry flag is set to the last bit of the content
+ * The zero flag and the negative flag are set accordingly
+ */
+
+/** Each test will perform three ASL instructions
+ * 1. ASL (1000 0000) -> FIRST_DATA
+ * 2. ASL (0100 0000) -> SECOND_DATA
+ * 3. ASL (0000 0001) -> THIRD_DATA
+ */
+/** At the end of each instruction,
+ * 1. Content: 0000 0000, Carry Flag: 1, Zero Flag: 1, Negative Flag: 0
+ * 2. Content: 1000 0000, Carry Flag: 0, Zero Flag: 0, Negative Flag: 1
+ * 3. Content: 0000 0010, Carry Flag: 0, Zero Flag: 0, Negative Flag: 0
+ */
+
 #include "../../../include/cpu.h"
 #include "../../../include/instructions.h"
 #include "../../src/unity.h"
@@ -32,26 +49,26 @@
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(n, readPS() & NM, msg4);                                   \
     }
 
-#define TEST_A(number, val, c, z, n)                                           \
-    {                                                                                             \
-        char msg1[100], msg2[100], msg3[100], msg4[100];                                          \
-        sprintf(msg1, "A isn't right in %s instruction for Accumulator addressing.", number);        \
+#define TEST_A(number, val, c, z, n)                                                                      \
+    {                                                                                                     \
+        char msg1[100], msg2[100], msg3[100], msg4[100];                                                  \
+        sprintf(msg1, "A isn't right in %s instruction for Accumulator addressing.", number);             \
         sprintf(msg2, "Carry flag isn't right in %s instruction for Accumulator addressing.", number);    \
         sprintf(msg3, "Zero flag isn't right in %s instruction for Accumulator addressing.", number);     \
         sprintf(msg4, "Negative flag isn't right in %s instruction for Accumulator addressing.", number); \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readA(), msg1);                           \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(c, readPS() & CM, msg2);                                   \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS() & ZM, msg3);                                   \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(n, readPS() & NM, msg4);                                   \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readA(), msg1);                                               \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(c, readPS() & CM, msg2);                                           \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS() & ZM, msg3);                                           \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(n, readPS() & NM, msg4);                                           \
     }
 
-#define FIRST_TEST_ZP TEST("first", "ZP", 0x0010, 0x00, CM, ZM, 0)
-#define SECOND_TEST_ZP TEST("second", "ZP", 0x0020, 0x80, 0, 0, NM)
-#define THIRD_TEST_ZP TEST("third", "ZP", 0x0030, 0x02, 0, 0, 0)
+#define FIRST_TEST_ZP TEST("first", "ZP", 0x0010, 0x00, CM, ZM, 0x00)
+#define SECOND_TEST_ZP TEST("second", "ZP", 0x0020, 0x80, 0x00, 0x00, NM)
+#define THIRD_TEST_ZP TEST("third", "ZP", 0x0030, 0x02, 0x00, 0x00, 0x00)
 
-#define FIRST_TEST_A TEST_A("first", 0x00, CM, ZM, 0)
-#define SECOND_TEST_A TEST_A("second", 0x80, 0, 0, NM)
-#define THIRD_TEST_A TEST_A("third", 0x02, 0, 0, 0)
+#define FIRST_TEST_A TEST_A("first", 0x00, CM, ZM, 0x00)
+#define SECOND_TEST_A TEST_A("second", 0x80, 0x00, 0x00, NM)
+#define THIRD_TEST_A TEST_A("third", 0x02, 0x00, 0x00, 0x00)
 
 #define FIRST_TEST_ABS TEST("first", "ABS", 0x0400, 0x00, CM, ZM, 0x00)
 #define SECOND_TEST_ABS TEST("second", "ABS", 0x0410, 0x80, 0x00, 0x00, NM)

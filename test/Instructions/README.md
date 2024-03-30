@@ -26,6 +26,7 @@ _Note that the list only includes currently implemented instructions._
     - :white_check_mark: ASL
     - :white_check_mark: ROL
     - :white_check_mark: LSR
+    - :white_check_mark: ROR
     - STX
     - LDX
     - DEC

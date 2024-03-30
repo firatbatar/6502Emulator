@@ -1,6 +1,6 @@
 unity := ../../src/unity.c ../../../src/cpu.c
 
-all: ASL ROL LSR
+all: ASL ROL LSR ROR
 	@echo "All group one tests compiled!"
 
 ASL: $(unity) asl.c
@@ -12,6 +12,9 @@ ROL: $(unity) rol.c
 LSR: $(unity) lsr.c
 	@gcc $(unity) lsr.c -o lsr.out -Wall
 
+ROR: $(unity) ror.c
+	@gcc $(unity) ror.c -o ror.out -Wall
+
 run: clean all
 	@echo "\nRunning ASL tests..."
 	@./asl.out
@@ -19,6 +22,8 @@ run: clean all
 	@./rol.out
 	@echo "\nRunning LSR tests..."
 	@./lsr.out
+	@echo "\nRunning ROR tests..."
+	@./ror.out
 
 clean:
 	@find . -name "*.out" -type f -delete

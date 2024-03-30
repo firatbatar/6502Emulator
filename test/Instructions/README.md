@@ -25,8 +25,7 @@ _Note that the list only includes currently implemented instructions._
 2. **`groupTwo`** includes:
     - :white_check_mark: ASL
     - :white_check_mark: ROL
-    - LSR
-    - ROR
+    - :white_check_mark: LSR
     - STX
     - LDX
     - DEC

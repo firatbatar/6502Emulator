@@ -6,10 +6,10 @@
  * Zero and Negative flag are affected
  */
 
-/** Each test will perform three ORA instructions
+/** Each test will perform three LDA instructions
  * 1. LDA with (0000 0000) -> FIRST_DATA
- * 2. ORA with (1000 0000) -> SECOND_DATA
- * 3. ORA with (0100 0000) -> THIRD_DATA
+ * 2. LDA with (1000 0000) -> SECOND_DATA
+ * 3. LDA with (0100 0000) -> THIRD_DATA
  */
 /** At the end of each instruction,
  * Accumulator starts as (0000 0001)

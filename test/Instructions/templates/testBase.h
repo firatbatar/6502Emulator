@@ -23,12 +23,12 @@ void test_zero_page(void) { ZP_TEST }
 #endif
 
 #ifdef ZPX_TEST
-/** Test for zero page,X addressing without wrapping */
+/** Test for zero page,X (or Y depending on the situation) addressing without wrapping */
 void test_zero_page_x(void) { ZPX_TEST }
 #endif
 
 #ifdef ZPX_W_TEST
-/** Test for zero page,X addressing with wrapping */
+/** Test for zero page,X (or Y depending on the situation) addressing with wrapping */
 void test_zero_page_x_wrap(void) { ZPX_W_TEST }
 #endif
 

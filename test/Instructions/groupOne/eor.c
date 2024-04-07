@@ -9,9 +9,9 @@
 
 /** Each test will perform three EOR instructions
  * Accumulator is set to (1111 1111) at the start
- * 1. ORA with (1111 1111) -> FIRST_DATA
- * 2. ORA with (0101 0101) -> SECOND_DATA
- * 3. ORA with (1010 1010) -> THIRD_DATA
+ * 1. EOR with (1111 1111) -> FIRST_DATA
+ * 2. EOR with (0101 0101) -> SECOND_DATA
+ * 3. EOR with (1010 1010) -> THIRD_DATA
  */
 /** At the end of each instruction,
  * 1. Accumulator: 0000 0000, Zero Flag: 1, Negative Flag: 0 -> FIRST_INSTRUCTION_TEST

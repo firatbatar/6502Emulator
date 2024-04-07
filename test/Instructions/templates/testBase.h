@@ -23,13 +23,23 @@ void test_zero_page(void) { ZP_TEST }
 #endif
 
 #ifdef ZPX_TEST
-/** Test for zero page,X (or Y depending on the situation) addressing without wrapping */
+/** Test for zero page,X addressing without wrapping */
 void test_zero_page_x(void) { ZPX_TEST }
 #endif
 
 #ifdef ZPX_W_TEST
-/** Test for zero page,X (or Y depending on the situation) addressing with wrapping */
+/** Test for zero page,X addressing with wrapping */
 void test_zero_page_x_wrap(void) { ZPX_W_TEST }
+#endif
+
+#ifdef ZPY_TEST
+/** Test for zero page,Y addressing without wrapping */
+void test_zero_page_y(void) { ZPY_TEST }
+#endif
+
+#ifdef ZPY_W_TEST
+/** Test for zero page,Y addressing with wrapping */
+void test_zero_page_y_wrap(void) { ZPY_W_TEST }
 #endif
 
 #ifdef ABS_TEST
@@ -40,6 +50,11 @@ void test_absolute(void) { ABS_TEST }
 #ifdef ABSX_TEST
 /** Test for absolute,X addressing */
 void test_absolute_x(void) { ABSX_TEST }
+#endif
+
+#ifdef ABSY_TEST
+/** Test for absolute,Y addressing */
+void test_absolute_y(void) { ABSY_TEST }
 #endif
 
 #ifdef INDX_TEST
@@ -80,12 +95,23 @@ int main(void) {
     RUN_TEST(test_zero_page_x_wrap);
     #endif
 
+    #ifdef ZPY_TEST
+    RUN_TEST(test_zero_page_y);
+    #endif
+    #ifdef ZPY_W_TEST
+    RUN_TEST(test_zero_page_y_wrap);
+    #endif
+
     #ifdef ABS_TEST
     RUN_TEST(test_absolute);
     #endif
 
     #ifdef ABSX_TEST
     RUN_TEST(test_absolute_x);
+    #endif
+
+    #ifdef ABSY_TEST
+    RUN_TEST(test_absolute_y);
     #endif
 
     #ifdef INDX_TEST

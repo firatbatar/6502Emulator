@@ -117,6 +117,55 @@
     }
 #endif
 
+#ifdef INSTRUCTION_ZPY
+/** Test for zero page,Y addressing without wrapping */
+#define ZPY_TEST                                             \
+    {                                                        \
+        writeY(0x05); /* Start with 0x05 in the Y register*/ \
+                                                             \
+        writeMemory(0x0200, INSTRUCTION_ZPY);                \
+        writeMemory(0x0201, 0x10);                           \
+        writeMemory(0x0015, FIRST_DATA);                     \
+        execute();                                           \
+        FIRST_INSTRUCTION_TEST("ZP,Y");                      \
+                                                             \
+        writeMemory(0x0202, INSTRUCTION_ZPY);                \
+        writeMemory(0x0203, 0x20);                           \
+        writeMemory(0x0025, SECOND_DATA);                    \
+        execute();                                           \
+        SECOND_INSTRUCTION_TEST("ZP,Y");                     \
+                                                             \
+        writeMemory(0x0204, INSTRUCTION_ZPY);                \
+        writeMemory(0x0205, 0x30);                           \
+        writeMemory(0x0035, THIRD_DATA);                     \
+        execute();                                           \
+        THIRD_INSTRUCTION_TEST("ZP,Y");                      \
+    }
+/** Test for zero page,X addressing with wrapping */
+#define ZPY_W_TEST                                          \
+    {                                                       \
+        writeY(0xFF); /*Start with 0xFF in the Y register*/ \
+                                                            \
+        writeMemory(0x0200, INSTRUCTION_ZPY);               \
+        writeMemory(0x0201, 0x20);                          \
+        writeMemory(0x001F, FIRST_DATA);                    \
+        execute();                                          \
+        FIRST_INSTRUCTION_TEST("ZP,Y with wrapping");       \
+                                                            \
+        writeMemory(0x0202, INSTRUCTION_ZPY);               \
+        writeMemory(0x0203, 0x30);                          \
+        writeMemory(0x002F, SECOND_DATA);                   \
+        execute();                                          \
+        SECOND_INSTRUCTION_TEST("ZP,Y with wrapping");      \
+                                                            \
+        writeMemory(0x0204, INSTRUCTION_ZPY);               \
+        writeMemory(0x0205, 0x40);                          \
+        writeMemory(0x003F, THIRD_DATA);                    \
+        execute();                                          \
+        THIRD_INSTRUCTION_TEST("ZP,Y with wrapping");       \
+    }
+#endif
+
 #ifdef INSTRUCTION_ABS
 /** Test for absolute addressing */
 #define ABS_TEST                              \
@@ -170,6 +219,35 @@
         writeMemory(0x0425, THIRD_DATA);                    \
         execute();                                          \
         THIRD_INSTRUCTION_TEST("ABS,X");                    \
+    }
+#endif
+
+#ifdef INSTRUCTION_ABSY
+/** Test for absolute,Y addressing */
+#define ABSY_TEST                                           \
+    {                                                       \
+        writeY(0x05); /*Start with 0x05 in the Y register*/ \
+                                                            \
+        writeMemory(0x0200, INSTRUCTION_ABSY);              \
+        writeMemory(0x0201, 0x00);                          \
+        writeMemory(0x0202, 0x04);                          \
+        writeMemory(0x0405, FIRST_DATA);                    \
+        execute();                                          \
+        FIRST_INSTRUCTION_TEST("ABS,Y");                    \
+                                                            \
+        writeMemory(0x0203, INSTRUCTION_ABSY);              \
+        writeMemory(0x0204, 0x10);                          \
+        writeMemory(0x0205, 0x04);                          \
+        writeMemory(0x0415, SECOND_DATA);                   \
+        execute();                                          \
+        SECOND_INSTRUCTION_TEST("ABS,Y");                   \
+                                                            \
+        writeMemory(0x0206, INSTRUCTION_ABSY);              \
+        writeMemory(0x0207, 0x20);                          \
+        writeMemory(0x0208, 0x04);                          \
+        writeMemory(0x0425, THIRD_DATA);                    \
+        execute();                                          \
+        THIRD_INSTRUCTION_TEST("ABS,Y");                    \
     }
 #endif
 

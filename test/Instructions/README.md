@@ -36,8 +36,8 @@ _Note that the list only includes currently implemented instructions._
     - :white_check_mark: BIT
     - :white_check_mark: JMP
     - :white_check_mark: JMP(abs)
-    - STY
-    - LDY
+    - :white_check_mark: STY
+    - :white_check_mark: LDY
     - CPY
     - CPX
 

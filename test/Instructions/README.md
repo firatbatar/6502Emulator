@@ -31,7 +31,7 @@ _Note that the list only includes currently implemented instructions._
     - :white_check_mark: STX
     - :white_check_mark: LDX
     - :white_check_mark: DEC
-    - INC
+    - :white_check_mark: INC
 3. **`groupThree`** includes:
     - BIT
     - JMP

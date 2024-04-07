@@ -1,6 +1,6 @@
 unity := ../../src/unity.c ../../../src/cpu.c
 
-all: BIT JMP STY LDY
+all: BIT JMP STY LDY CPY CPX
 	@echo "All group one tests compiled!"
 
 BIT: $(unity) bit.c
@@ -15,6 +15,12 @@ STY: $(unity) sty.c
 LDY: $(unity) ldy.c
 	@gcc $(unity) ldy.c -o ldy.out -Wall
 
+CPY: $(unity) cpy.c
+	@gcc $(unity) cpy.c -o cpy.out -Wall
+
+CPX: $(unity) cpx.c
+	@gcc $(unity) cpx.c -o cpx.out -Wall
+
 run: clean all
 	@echo "\nRunning BIT tests..."
 	@./bit.out
@@ -24,6 +30,10 @@ run: clean all
 	@./sty.out
 	@echo "\nRunning LDY tests..."
 	@./ldy.out
+	@echo "\nRunning CPY tests..."
+	@./cpy.out
+	@echo "\nRunning CPX tests..."
+	@./cpx.out
 
 clean:
 	@find . -name "*.out" -type f -delete

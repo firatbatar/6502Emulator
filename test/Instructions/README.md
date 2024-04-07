@@ -38,8 +38,8 @@ _Note that the list only includes currently implemented instructions._
     - :white_check_mark: JMP(abs)
     - :white_check_mark: STY
     - :white_check_mark: LDY
-    - CPY
-    - CPX
+    - :white_check_mark: CPY
+    - :white_check_mark: CPX
 
 
 ## Tests

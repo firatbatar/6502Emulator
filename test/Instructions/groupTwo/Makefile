@@ -15,6 +15,9 @@ LSR: $(unity) lsr.c
 ROR: $(unity) ror.c
 	@gcc $(unity) ror.c -o ror.out -Wall
 
+STX: $(unity) stx.c
+	@gcc $(unity) stx.c -o stx.out -Wall 
+
 run: clean all
 	@echo "\nRunning ASL tests..."
 	@./asl.out
@@ -24,6 +27,8 @@ run: clean all
 	@./lsr.out
 	@echo "\nRunning ROR tests..."
 	@./ror.out
+	@echo "\nRunning STX tests..."
+	@./stx.out
 
 clean:
 	@find . -name "*.out" -type f -delete

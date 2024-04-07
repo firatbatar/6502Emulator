@@ -5,6 +5,7 @@ This directory contains unit tests for the instructions.
 ## Test Templates
 
 Since most of the instruction do similar actions as they are performing their instruction I will write some templates to re-use.  
+They are very messy at the moment since I am writing them as I, as I need. Probably I could have been much clever with them, perhaps I will return them later.  
 Templates can be found in [`templates`](./templates/) folder.
 
 ## Folder Structure
@@ -29,7 +30,7 @@ _Note that the list only includes currently implemented instructions._
     - :white_check_mark: ROR
     - :white_check_mark: STX
     - :white_check_mark: LDX
-    - DEC
+    - :white_check_mark: DEC
     - INC
 3. **`groupThree`** includes:
     - BIT

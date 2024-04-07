@@ -45,12 +45,7 @@ _Note that the list only includes currently implemented instructions._
 ## Tests
 
 Tests uses the [`Unity`](https://github.com/ThrowTheSwitch/Unity) framework.  
-What tests are doing is to test each instruction with different addressing modes and see if the results on the internal registers and the memory are as expected.
-
-### Group One Tests
-
-The [groupOne](./groupOne/) folder includes a main `groupOne.c` file which lays out a template for the tests, since the group one tests will be very similar to each other. Each tests needs to define certain macros in their own files like *SETUP* and necessary data and tests.  
-Each tests runs the instruction three times with three data and test them according to the defined macros.  
+What tests are doing is to test each instruction with different addressing modes and see if the results on the internal registers and the memory are as expected.  
 
 ## Running The tests
 

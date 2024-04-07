@@ -348,7 +348,7 @@ void decodeG3Instruction(byte aaa, byte *addr) {
             JMP(addr);
             break;
         case 3:  // JMP()
-            addr = memory + (((*addr) << 8) | (*(addr + 1)));
+            addr = memory + ((*(addr + 1) << 8) | (*addr));
             JMP(addr);
             break;
         case 4:  // STY

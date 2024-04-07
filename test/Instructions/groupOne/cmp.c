@@ -1,5 +1,5 @@
-#ifndef _TEST_GROUP_ONE_H
-#define _TEST_GROUP_ONE_H
+#ifndef _TEST_H
+#define _TEST_H
 
 /**
  * Compares the value in the accumulator with the value in memory
@@ -8,7 +8,7 @@
  */
 
 /** Each test will perform three CMP instructions
- * Accumulator wil start as (0000 1111)
+ * Accumulator will start as (0000 1111)
  * 1. CMP with (0000 1111) -> FIRST_DATA
  * 2. CMP with (0000 0000) -> SECOND_DATA
  * 3. CMP with (0111 1111) -> THIRD_DATA
@@ -39,6 +39,8 @@
 #define FIRST_DATA 0x0F
 #define SECOND_DATA 0x00
 #define THIRD_DATA 0x7F
+
+#define UNPACK_TESTS
 
 #define FIRST_INSTRUCTION_TEST(addressing)                                                   \
     {                                                                                        \
@@ -85,6 +87,6 @@
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(NM, readPS() & NM, msg4);                             \
     }
 
-#include "../templates/groupOneBase.h"
+#include "../templates/testTemplate.h"
 
-#endif  // _TEST_GROUP_ONE_H
+#endif  // _TEST_H

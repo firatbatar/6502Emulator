@@ -1,5 +1,5 @@
-#ifndef _TEST_GROUP_TWO_H
-#define _TEST_GROUP_TWO_H
+#ifndef _TEST_H
+#define _TEST_H
 
 /**
  * Increments the memory content by 1
@@ -34,9 +34,9 @@
 #define SECOND_DATA 0xFE
 #define THIRD_DATA 0x53
 
-#define TEST(number, addressing, address, val, z, n)                                           \
+#define TEST(number, addressing, address, val, z, n)                                              \
     {                                                                                             \
-        char msg1[100], msg2[100], msg3[100];                                          \
+        char msg1[100], msg2[100], msg3[100];                                                     \
         sprintf(msg1, "Memory isn't right in %s instruction for %s.", number, addressing);        \
         sprintf(msg2, "Zero flag isn't right in %s instruction for %s.", number, addressing);     \
         sprintf(msg3, "Negative flag isn't right in %s instruction for %s.", number, addressing); \
@@ -65,6 +65,6 @@
 #define SECOND_TEST_ABSX TEST("second", "ABSX", 0x0415, 0xFF, 0x00, NM)
 #define THIRD_TEST_ABSX TEST("third", "ABSX", 0x0425, 0x54, 0x00, 0x00)
 
-#include "../templates/groupTwoShiftBase.h"
+#include "../templates/testTemplate.h"
 
-#endif  // _TEST_GROUP_TWO_H
+#endif  // _TEST_H

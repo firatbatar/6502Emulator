@@ -1,5 +1,5 @@
-#ifndef _TEST_GROUP_ONE_H
-#define _TEST_GROUP_ONE_H
+#ifndef _TEST_H
+#define _TEST_H
 
 /**
  * Compares the value in the Y register with the value in memory
@@ -34,6 +34,8 @@
 #define FIRST_DATA 0x0F
 #define SECOND_DATA 0x00
 #define THIRD_DATA 0x7F
+
+#define UNPACK_TESTS
 
 #define FIRST_INSTRUCTION_TEST(addressing)                                                   \
     {                                                                                        \
@@ -80,6 +82,6 @@
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(NM, readPS() & NM, msg4);                             \
     }
 
-#include "../templates/groupOneBase.h"
+#include "../templates/testTemplate.h"
 
-#endif  // _TEST_GROUP_ONE_H
+#endif  // _TEST_H

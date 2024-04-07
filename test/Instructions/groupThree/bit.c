@@ -1,5 +1,5 @@
-#ifndef _TEST_GROUP_TWO_H
-#define _TEST_GROUP_TWO_H
+#ifndef _TEST_H
+#define _TEST_H
 
 /**
  * Tests if one or more bits are set in a target memory using the mask pattern in A
@@ -58,6 +58,6 @@
 #define SECOND_TEST_ABS TEST("second", "ABS", 0x0410, SECOND_DATA, VM, ZM, NM)
 #define THIRD_TEST_ABS TEST("third", "ABS", 0x0420, THIRD_DATA, 0x00, 0x00, 0x00)
 
-#include "../templates/groupTwoShiftBase.h"
+#include "../templates/testTemplate.h"
 
-#endif  // _TEST_GROUP_TWO_H
+#endif  // _TEST_H

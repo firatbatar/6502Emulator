@@ -1,5 +1,5 @@
-#ifndef _TEST_GROUP_ONE_H
-#define _TEST_GROUP_ONE_H
+#ifndef _TEST_H
+#define _TEST_H
 
 /**
  * AND performs an inclusive and on the accumulator
@@ -40,6 +40,8 @@
 #define SECOND_DATA 0x55
 #define THIRD_DATA 0xAA
 
+#define UNPACK_TESTS
+
 #define FIRST_INSTRUCTION_TEST(addressing)                                                   \
     {                                                                                        \
         char msg1[100], msg2[100], msg3[100];                                                \
@@ -79,6 +81,6 @@
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & NM, msg3);                           \
     }
 
-#include "../templates/groupOneBase.h"
+#include "../templates/testTemplate.h"
 
-#endif  // _TEST_GROUP_ONE_H
+#endif  // _TEST_H

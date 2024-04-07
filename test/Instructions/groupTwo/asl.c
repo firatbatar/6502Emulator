@@ -1,5 +1,5 @@
-#ifndef _TEST_GROUP_TWO_H
-#define _TEST_GROUP_TWO_H
+#ifndef _TEST_H
+#define _TEST_H
 
 /**
  * Shifts the content to 1 bit to the left
@@ -86,6 +86,6 @@
 #define SECOND_TEST_ABSX TEST("second", "ABSX", 0x0415, 0x80, 0x00, 0x00, NM)
 #define THIRD_TEST_ABSX TEST("third", "ABSX", 0x0425, 0x02, 0x00, 0x00, 0x00)
 
-#include "../templates/groupTwoShiftBase.h"
+#include "../templates/testTemplate.h"
 
-#endif  // _TEST_GROUP_TWO_H
+#endif  // _TEST_H

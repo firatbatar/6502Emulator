@@ -1,5 +1,5 @@
-#ifndef _TEST_GROUP_ONE_H
-#define _TEST_GROUP_ONE_H
+#ifndef _TEST_H
+#define _TEST_H
 
 /**
  * Subtracts the contents of a memory location to the accumulator
@@ -41,6 +41,8 @@
 #define FIRST_DATA 0x7F
 #define SECOND_DATA 0xF1
 #define THIRD_DATA 0x80
+
+#define UNPACK_TESTS
 
 #define FIRST_INSTRUCTION_TEST(addressing)                                                   \
     {                                                                                        \
@@ -87,6 +89,6 @@
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(NM, readPS() & NM, msg5);                             \
     }
 
-#include "../templates/groupOneBase.h"
+#include "../templates/testTemplate.h"
 
-#endif  // _TEST_GROUP_ONE_H
+#endif  // _TEST_H

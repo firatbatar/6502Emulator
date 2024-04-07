@@ -1,7 +1,7 @@
-#ifndef _TEST_BASE_H
-#define _TEST_BASE_H
+#ifndef _TEST_MAIN_H
+#define _TEST_MAIN_H
 
-#ifdef _TEST_H
+#ifdef _TEST_TEMPLATE_H
 #ifdef SETUP_CONFIG
 #ifdef TEARDOWN_CONFIG
 
@@ -136,4 +136,4 @@ int main(void) {
 #endif
 #endif
 
-#endif  // _TEST_BASE_H
+#endif  // _TEST_MAIN_H

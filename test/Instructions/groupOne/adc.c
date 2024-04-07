@@ -1,5 +1,5 @@
-#ifndef _TEST_GROUP_ONE_H
-#define _TEST_GROUP_ONE_H
+#ifndef _TEST_H
+#define _TEST_H
 
 /**
  * Adds the value of memory and carry flag the accumulator
@@ -39,6 +39,8 @@
 #define FIRST_DATA 0x7E
 #define SECOND_DATA 0x01
 #define THIRD_DATA 0x80
+
+#define UNPACK_TESTS
 
 #define FIRST_INSTRUCTION_TEST(addressing)                                                   \
     {                                                                                        \
@@ -85,6 +87,6 @@
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & NM, msg5);                           \
     }
 
-#include "../templates/groupOneBase.h"
+#include "../templates/testTemplate.h"
 
-#endif  // _TEST_GROUP_ONE_H
+#endif  // _TEST_H

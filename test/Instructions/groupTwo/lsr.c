@@ -1,5 +1,5 @@
-#ifndef _TEST_GROUP_TWO_H
-#define _TEST_GROUP_TWO_H
+#ifndef _TEST_H
+#define _TEST_H
 
 /**
  * Shifts the content to 1 bit to the right
@@ -34,7 +34,7 @@
 #define SECOND_DATA 0x02
 #define THIRD_DATA 0xFF
 
-#define TEST(number, addressing, address, val, c, z)                                           \
+#define TEST(number, addressing, address, val, c, z)                                              \
     {                                                                                             \
         char msg1[100], msg2[100], msg3[100], msg4[100];                                          \
         sprintf(msg1, "Memory isn't right in %s instruction for %s.", number, addressing);        \
@@ -44,10 +44,10 @@
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readMemory(address), msg1);                           \
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(c, readPS() & CM, msg2);                                   \
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS() & ZM, msg3);                                   \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & NM, msg4);                                   \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & NM, msg4);                                \
     }
 
-#define TEST_A(number, val, c, z)                                                                      \
+#define TEST_A(number, val, c, z)                                                                         \
     {                                                                                                     \
         char msg1[100], msg2[100], msg3[100], msg4[100];                                                  \
         sprintf(msg1, "A isn't right in %s instruction for Accumulator addressing.", number);             \
@@ -57,7 +57,7 @@
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readA(), msg1);                                               \
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(c, readPS() & CM, msg2);                                           \
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS() & ZM, msg3);                                           \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & NM, msg4);                                           \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & NM, msg4);                                        \
     }
 
 #define FIRST_TEST_ZP TEST("first", "ZP", 0x0010, 0x00, CM, ZM)
@@ -84,6 +84,6 @@
 #define SECOND_TEST_ABSX TEST("second", "ABSX", 0x0415, 0x01, 0x00, 0x00)
 #define THIRD_TEST_ABSX
 
-#include "../templates/groupTwoShiftBase.h"
+#include "../templates/testTemplate.h"
 
-#endif  // _TEST_GROUP_TWO_H
+#endif  // _TEST_H

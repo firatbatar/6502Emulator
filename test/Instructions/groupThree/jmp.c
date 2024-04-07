@@ -1,3 +1,6 @@
+#ifndef _TEST_TEMPLATE_H
+#define _TEST_TEMPLATE_H
+
 #ifndef _TEST_H
 #define _TEST_H
 
@@ -48,6 +51,7 @@
         TEST_ASSERT_EQUAL_HEX16_MESSAGE(0xCCDD, readPC(), "PC is not set right for ABS.");     \
     }
 
-#include "../templates/testBase.h"
+#include "../templates/testMain.h"
 
 #endif  // _TEST_H
+#endif  // _TEST_TEMPLATE_H

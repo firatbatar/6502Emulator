@@ -29,7 +29,7 @@
         TEST_ASSERT_EQUAL_HEX8_MESSAGE(oldPS, readPS(), "PS has been changed in ZP.");         \
     }
 
-#define ZPX_TEST /* Technically this is zp indexed by Y */                                      \
+#define ZPY_TEST                                                                                \
     {                                                                                           \
         writeY(0x05); /* Start with 0x05 in the Y register*/                                    \
                                                                                                 \
@@ -39,12 +39,12 @@
         byte oldPS = readPS();                                                                  \
         execute();                                                                              \
                                                                                                 \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x55, readMemory(0x0015), "Memory isn't right in ZPX."); \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(oldX, readX(), "X has been changed in ZPX.");            \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(oldPS, readPS(), "PS has been changed in ZPX.");         \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x55, readMemory(0x0015), "Memory isn't right in ZPY."); \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(oldX, readX(), "X has been changed in ZPY.");            \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(oldPS, readPS(), "PS has been changed in ZPY.");         \
     }
 
-#define ZPX_W_TEST /* Technically this is zp indexed by Y */                                               \
+#define ZPY_W_TEST                                                                                         \
     {                                                                                                      \
         writeY(0xFF); /*Start with 0xFF in the Y register*/                                                \
                                                                                                            \
@@ -54,9 +54,9 @@
         byte oldPS = readPS();                                                                             \
         execute();                                                                                         \
                                                                                                            \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x55, readMemory(0x001F), "Memory isn't right in ZPX with wrapp."); \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(oldX, readX(), "X has been changed in ZPX with wrap.");             \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(oldPS, readPS(), "PS has been changed in ZPX with wrap.");          \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x55, readMemory(0x001F), "Memory isn't right in ZPY with wrapp."); \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(oldX, readX(), "X has been changed in ZPY with wrap.");             \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(oldPS, readPS(), "PS has been changed in ZPY with wrap.");          \
     }
 
 #define ABS_TEST                                                                                \

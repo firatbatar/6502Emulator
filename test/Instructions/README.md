@@ -28,7 +28,7 @@ _Note that the list only includes currently implemented instructions._
     - :white_check_mark: LSR
     - :white_check_mark: ROR
     - :white_check_mark: STX
-    - LDX
+    - :white_check_mark: LDX
     - DEC
     - INC
 3. **`groupThree`** includes:

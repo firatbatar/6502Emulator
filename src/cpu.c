@@ -529,7 +529,7 @@ void ASL(byte *addr) {
  * carry flag value. */
 void ROL(byte *addr) {
     byte newCarry = (*addr) & 0x80;
-    byte newVal = ((*addr) << 1) | (0x01 & C);
+    byte newVal = ((*addr) << 1) | C;
 
     writeByte(addr, newVal);
     setZeroFlag(newVal == 0);
@@ -552,7 +552,7 @@ void LSR(byte *addr) {
  * carry flag value. */
 void ROR(byte *addr) {
     byte newCarry = (*addr) & 0x01;
-    byte newVal = ((*addr) >> 1) | (0x80 & C);
+    byte newVal = ((*addr) >> 1) | (C << 7);
 
     writeByte(addr, newVal);
     setZeroFlag(newVal == 0);

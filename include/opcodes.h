@@ -1,5 +1,5 @@
-#ifndef _INSTRUCTIONS_H
-#define _INSTRUCTIONS_H
+#ifndef _OPCODES_H
+#define _OPCODES_H
 
 // Define the opcodes for the instructions
 

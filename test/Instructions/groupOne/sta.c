@@ -2,7 +2,7 @@
 #define _TEST_H
 
 #include "../../../include/cpu.h"
-#include "../../../include/instructions.h"
+#include "../../../include/opcodes.h"
 #include "../../src/unity.h"
 #include "../../src/unity_internals.h"
 

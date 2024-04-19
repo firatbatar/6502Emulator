@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../include/cpu.h"
-#include "../include/instructions.h"
+#include "../include/opcodes.h"
 
 int main(int argc, char *argv[]) {
     byte newMem[0x10000];

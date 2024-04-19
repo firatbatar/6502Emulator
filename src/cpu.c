@@ -1,5 +1,5 @@
 #include "../include/cpu.h"
-#include "../include/instructions.h"
+#include "../include/opcodes.h"
 
 /* Initilaztions */
 
@@ -276,28 +276,28 @@ byte *decodeG23AddressMode(byte bbb, byte aaa) {
 void decodeG1Instruction(byte aaa, byte *addr) {
     switch (aaa) {
         case 0:  // ORA
-            ORA(addr);
+            ORA(addr, &A);
             break;
         case 1:  // AND
-            AND(addr);
+            AND(addr, &A);
             break;
         case 2:  // EOR
-            EOR(addr);
+            EOR(addr, &A);
             break;
         case 3:  // ADC
-            ADC(addr);
+            ADC(addr, &A, &PS);
             break;
         case 4:  // STA
-            STA(addr);
+            STA(addr, &A);
             break;
         case 5:  // LDA
-            LDA(addr);
+            LDA(addr, &A);
             break;
         case 6:  // CMP
-            CMP(addr);
+            CMP(addr, &A);
             break;
         case 7:  // SBC
-            SBC(addr);
+            SBC(addr, &A, &PS);
             break;
         default:
             fprintf(stderr, "Invalid aaa value: %d\n", aaa);
@@ -312,7 +312,7 @@ void decodeG2Instruction(byte aaa, byte *addr) {
             ASL(addr);
             break;
         case 1:  // ROL
-            ROL(addr);
+            ROL(addr, &PS);
             break;
         case 2:  // LSR
             LSR(addr);
@@ -321,10 +321,10 @@ void decodeG2Instruction(byte aaa, byte *addr) {
             ROR(addr);
             break;
         case 4:  // STX
-            STX(addr);
+            STX(addr, &X);
             break;
         case 5:  // LDX
-            LDX(addr);
+            LDX(addr, &X);
             break;
         case 6:  // DEC
             DEC(addr);
@@ -342,26 +342,26 @@ void decodeG2Instruction(byte aaa, byte *addr) {
 void decodeG3Instruction(byte aaa, byte *addr) {
     switch (aaa) {
         case 1:  // BIT
-            BIT(addr);
+            BIT(addr, &A);
             break;
         case 2:  // JMP
-            JMP(addr);
+            JMP(addr, &PC, memory);
             break;
         case 3:  // JMP()
             addr = memory + ((*(addr + 1) << 8) | (*addr));
-            JMP(addr);
+            JMP(addr, &PC, memory);
             break;
         case 4:  // STY
-            STY(addr);
+            STY(addr, &Y);
             break;
         case 5:  // LDY
-            LDY(addr);
+            LDY(addr, &Y);
             break;
         case 6:  // CPY
-            CPY(addr);
+            CPY(addr, &Y);
             break;
         case 7:  // CPX
-            CPX(addr);
+            CPX(addr, &X);
             break;
         default:
             fprintf(stderr, "Invalid aaa value: %d\n", aaa);
@@ -446,38 +446,42 @@ void execute() {
 
 /* Instructions */
 /** An inclusive OR is performed, bit by bit, on the accumulator contents using the contents of a byte of memory. */
-void ORA(byte *addr) {
-    A |= (*addr);
+void ORA(byte *addr, byte *accumalatorAddr) {
+    *accumalatorAddr |= (*addr);
 
+    byte A = *accumalatorAddr;
     setZeroFlag(A == 0);
     setNegativeFlag(A & 0x80);
 }
 
 /** A logical AND is performed, bit by bit, on the accumulator contents using the contents of a byte of memory. */
-void AND(byte *addr) {
-    A &= (*addr);
+void AND(byte *addr, byte *accumalatorAddr) {
+    *accumalatorAddr &= (*addr);
 
+    byte A = *accumalatorAddr;
     setZeroFlag(A == 0);
     setNegativeFlag(A & 0x80);
 }
 
 /** An exclusive OR is performed, bit by bit, on the accumulator contents using the contents of a byte of memory. */
-void EOR(byte *addr) {
-    A ^= (*addr);
+void EOR(byte *addr, byte *accumalatorAddr) {
+    *accumalatorAddr ^= (*addr);
 
+    byte A = *accumalatorAddr;
     setZeroFlag(A == 0);
     setNegativeFlag(A & 0x80);
 }
 
 /** This instruction adds the contents of a memory location to the accumulator together with the carry bit. If overflow occurs the carry bit is set, this
  * enables multiple byte addition to be performed. */
-void ADC(byte *addr) {
+void ADC(byte *addr, byte *accumalatorAddr, byte *psAddr) {
     // TODO: No decimal mode
 
-    word result = A + (*addr) + C;
-    byte oldA = A;  // Keep the old A for overflow
-    A = result & 0xFF;
+    word result = (*accumalatorAddr) + (*addr) + ((*psAddr) & 0x01);
+    byte oldA = (*accumalatorAddr);  // Keep the old A for overflow
+    *accumalatorAddr = result & 0xFF;
 
+    byte A = *accumalatorAddr;
     setZeroFlag(A == 0);
     setNegativeFlag(A & 0x80);
     setCarryFlag(result & 0x0100);                                              // Set the carry flag if ninth bit is 1
@@ -486,31 +490,32 @@ void ADC(byte *addr) {
 }
 
 /** Stores the contents of the accumulator into memory. */
-void STA(byte *addr) { writeByte(addr, A); }
+void STA(byte *addr, byte *accumalatorAddr) { writeByte(addr, *accumalatorAddr); }
 
 /** Loads a byte of memory into the accumulator setting the zero and negative flags as appropriate. */
-void LDA(byte *addr) {
-    A = (*addr);
+void LDA(byte *addr, byte *accumalatorAddr) {
+    *accumalatorAddr = (*addr);
 
+    byte A = *accumalatorAddr;
     setZeroFlag(A == 0);
     setNegativeFlag(A & 0x80);
 }
 
 /** This instruction compares the contents of the accumulator with another memory held value and sets the zero and carry flags as appropriate. */
-void CMP(byte *addr) {
-    byte result = A - (*addr);
+void CMP(byte *addr, byte *accumalatorAddr) {
+    byte result = (*accumalatorAddr) - (*addr);
 
     setZeroFlag(result == 0);
     setNegativeFlag(result & 0x80);
-    setCarryFlag(A >= (*addr));  // Set the carry flag if the data <= accumulator
+    setCarryFlag((*accumalatorAddr) >= (*addr));  // Set the carry flag if the data <= accumulator
 }
 
 /** This instruction subtracts the contents of a memory location to the accumulator together with the not of the carry bit. If overflow occurs the carry bit is
  * clear, this enables multiple byte subtraction to be performed. */
-void SBC(byte *addr) {
+void SBC(byte *addr, byte *accumalatorAddr, byte *psAddr) {
     // Subtraction is addition with data's one's complement
-    byte complement = ~(*addr);  // One's complement of the data
-    ADC(&complement);            // Add the one's complement to the accumulator
+    byte complement = ~(*addr);         // One's complement of the data
+    ADC(&complement, accumalatorAddr, psAddr);  // Add the one's complement to the accumulator
 }
 
 /** This operation shifts all the bits of the accumulator or memory contents one bit left. Bit 0 is set to 0 and bit 7 is placed in the carry flag. */
@@ -527,9 +532,9 @@ void ASL(byte *addr) {
 
 /** Move each of the bits in either A or M one place to the left. Bit 0 is filled with the current value of the carry flag whilst the old bit 7 becomes the new
  * carry flag value. */
-void ROL(byte *addr) {
+void ROL(byte *addr, byte *psAddr) {
     byte newCarry = (*addr) & 0x80;
-    byte newVal = ((*addr) << 1) | C;
+    byte newVal = ((*addr) << 1) | ((*psAddr) & 0x01);
 
     writeByte(addr, newVal);
     setZeroFlag(newVal == 0);
@@ -561,12 +566,13 @@ void ROR(byte *addr) {
 }
 
 /** Stores the contents of the X register into memory. */
-void STX(byte *addr) { writeByte(addr, X); }
+void STX(byte *addr, byte *xAddr) { writeByte(addr, *xAddr); }
 
 /** Loads a byte of memory into the X register setting the zero and negative flags as appropriate. */
-void LDX(byte *addr) {
-    X = (*addr);
+void LDX(byte *addr, byte *xAddr) {
+    *xAddr = (*addr);
 
+    byte X = *xAddr;
     setZeroFlag(X == 0);
     setNegativeFlag(X & 0x80);
 }
@@ -591,8 +597,8 @@ void INC(byte *addr) {
 
 /** This instructions is used to test if one or more bits are set in a target memory location. The mask pattern in A is ANDed with the value in memory to set or
  * clear the zero flag, but the result is not kept. Bits 7 and 6 of the value from memory are copied into the N and V flags. */
-void BIT(byte *addr) {
-    byte result = A & (*addr);
+void BIT(byte *addr, byte *accumalatorAddr) {
+    byte result = (*accumalatorAddr) & (*addr);
 
     setZeroFlag(result == 0);         // Set the zero flag if the result is zero
     setNegativeFlag((*addr) & 0x80);  // 7th bit of the memory
@@ -600,33 +606,34 @@ void BIT(byte *addr) {
 }
 
 /** Sets the program counter to the address specified by the operand. */
-void JMP(byte *addr) { PC = (word)(addr - memory); }
+void JMP(byte *addr, word *pcAddr, byte *memory) { *pcAddr = (word)(addr - memory); }
 
 /** Stores the contents of the Y register into memory. */
-void STY(byte *addr) { writeByte(addr, Y); }
+void STY(byte *addr, byte *yAddr) { writeByte(addr, *yAddr); }
 
 /** Loads a byte of memory into the Y register setting the zero and negative flags as appropriate. */
-void LDY(byte *addr) {
-    Y = (*addr);
+void LDY(byte *addr, byte *yAddr) {
+    *yAddr = (*addr);
 
+    byte Y = *yAddr;
     setZeroFlag(Y == 0);
     setNegativeFlag(Y & 0x80);
 }
 
 /** This instruction compares the contents of the Y register with another memory held value and sets the zero and carry flags as appropriate. */
-void CPY(byte *addr) {
-    byte result = Y - (*addr);
+void CPY(byte *addr, byte *yAddr) {
+    byte result = (*yAddr) - (*addr);
 
     setZeroFlag(result == 0);
     setNegativeFlag(result & 0x80);
-    setCarryFlag(Y >= (*addr));  // Set the carry flag if the data <= Y
+    setCarryFlag((*yAddr) >= (*addr));  // Set the carry flag if the data <= Y
 }
 
 /** This instruction compares the contents of the X register with another memory held value and sets the zero and carry flags as appropriate. */
-void CPX(byte *addr) {
-    byte result = X - (*addr);
+void CPX(byte *addr, byte *xAddr) {
+    byte result = (*xAddr) - (*addr);
 
     setZeroFlag(result == 0);
     setNegativeFlag(result & 0x80);
-    setCarryFlag(X >= (*addr));  // Set the carry flag if the data <= X
+    setCarryFlag((*xAddr) >= (*addr));  // Set the carry flag if the data <= X
 }

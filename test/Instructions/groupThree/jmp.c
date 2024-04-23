@@ -1,8 +1,8 @@
-#ifndef _TEST_TEMPLATE_H
-#define _TEST_TEMPLATE_H
+#ifndef TEST_TEMPLATE_H
+#define TEST_TEMPLATE_H
 
-#ifndef _TEST_H
-#define _TEST_H
+#ifndef TEST_H
+#define TEST_H
 
 /** Sets the program counter to the address specified by the operand.
  */
@@ -53,5 +53,5 @@
 
 #include "../templates/testMain.h"
 
-#endif  // _TEST_H
-#endif  // _TEST_TEMPLATE_H
+#endif  // TEST_H
+#endif  // TEST_TEMPLATE_H

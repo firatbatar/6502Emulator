@@ -1,5 +1,5 @@
-#ifndef _TEST_H
-#define _TEST_H
+#ifndef TEST_H
+#define TEST_H
 
 #include "../../../include/cpu.h"
 #include "../../../include/opcodes.h"
@@ -106,4 +106,4 @@
 
 #include "../templates/testTemplate.h"
 
-#endif  // _TEST_H
+#endif  // TEST_H

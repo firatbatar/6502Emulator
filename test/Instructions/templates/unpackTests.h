@@ -1,5 +1,5 @@
-#ifndef _UNPACK_TESTS_H
-#define _UNPACK_TESTS_H
+#ifndef UNPACK_TESTS_H
+#define UNPACK_TESTS_H
 
 #ifdef UNPACK_TESTS
 #ifdef FIRST_INSTRUCTION_TEST
@@ -83,4 +83,4 @@
 #endif
 #endif
 
-#endif  // _UNPACK_TESTS_H
+#endif  // UNPACK_TESTS_H

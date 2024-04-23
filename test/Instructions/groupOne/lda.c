@@ -1,5 +1,5 @@
-#ifndef _TEST_H
-#define _TEST_H
+#ifndef TEST_H
+#define TEST_H
 
 /**
  * LDA loads the value from memory into the accumulator
@@ -76,4 +76,4 @@
 
 #include "../templates/testTemplate.h"
 
-#endif  // _TEST_H
+#endif  // TEST_H

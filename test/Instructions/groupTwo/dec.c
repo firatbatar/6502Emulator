@@ -1,5 +1,5 @@
-#ifndef _TEST_H
-#define _TEST_H
+#ifndef TEST_H
+#define TEST_H
 
 /**
  * Decrements the memory content by 1
@@ -67,4 +67,4 @@
 
 #include "../templates/testTemplate.h"
 
-#endif  // _TEST_H
+#endif  // TEST_H

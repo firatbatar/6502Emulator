@@ -1,5 +1,5 @@
-#ifndef _TEST_H
-#define _TEST_H
+#ifndef TEST_H
+#define TEST_H
 
 /**
  * Compares the value in the accumulator with the value in memory
@@ -89,4 +89,4 @@
 
 #include "../templates/testTemplate.h"
 
-#endif  // _TEST_H
+#endif  // TEST_H

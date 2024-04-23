@@ -1,5 +1,5 @@
-#ifndef _TEST_H
-#define _TEST_H
+#ifndef TEST_H
+#define TEST_H
 
 /**
  * LDX loads the value from memory into the Y register
@@ -73,4 +73,4 @@
 
 #include "../templates/testTemplate.h"
 
-#endif  // _TEST_H
+#endif  // TEST_H

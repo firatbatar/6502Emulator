@@ -1,7 +1,7 @@
-#ifndef _TEST_TEMPLATE_H
-#define _TEST_TEMPLATE_H
+#ifndef TEST_TEMPLATE_H
+#define TEST_TEMPLATE_H
 
-#ifdef _TEST_H
+#ifdef TEST_H
 #ifdef SETUP_CONFIG_C
 #ifdef TEARDOWN_CONFIG_C
 #if defined(FIRST_DATA) && defined(SECOND_DATA) && defined(THIRD_DATA)
@@ -513,4 +513,4 @@
 
 #include "testMain.h"
 
-#endif  // _TEST_TEMPLATE_H
+#endif  // TEST_TEMPLATE_H

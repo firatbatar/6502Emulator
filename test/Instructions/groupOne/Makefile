@@ -1,31 +1,13 @@
-unity := ../../src/unity.c ../../../src/cpu.c
+CC := gcc
+CFLAGS := -Wall
+INCLUDE := ../../../src/cpu.c ../../../src/instructions.c
+unity := ../../src/unity.c
 
-all: ORA AND EOR ADC STA LDA SBC CMP
+all: ora and eor adc sta lda sbc cmp
 	@echo "All group one tests compiled!"
 
-ORA: $(unity) ora.c
-	@gcc $(unity) ora.c -o ora.out -Wall
-
-AND: $(unity) and.c
-	@gcc $(unity) and.c -o and.out -Wall
-
-EOR: $(unity) eor.c
-	@gcc $(unity) eor.c -o eor.out -Wall
-
-ADC: $(unity) adc.c
-	@gcc $(unity) adc.c -o adc.out -Wall
-
-STA: $(unity) sta.c
-	@gcc $(unity) sta.c -o sta.out -Wall
-
-LDA: $(unity) lda.c
-	@gcc $(unity) lda.c -o lda.out -Wall
-
-CMP: $(unity) cmp.c
-	@gcc $(unity) cmp.c -o cmp.out -Wall
-
-SBC: $(unity) sbc.c
-	@gcc $(unity) sbc.c -o sbc.out -Wall
+%: %.c $(unity) $(INCLUDE)
+	@$(CC) -o $@.out $^ $(CFLAGS)
 
 run: clean all
 	@echo "\nRunning ORA tests..."
@@ -46,4 +28,4 @@ run: clean all
 	@./sbc.out
 
 clean:
-	@find . -name "*.out" -type f -delete
+	@rm -f *.out all

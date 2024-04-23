@@ -1,31 +1,13 @@
-unity := ../../src/unity.c ../../../src/cpu.c
+CC := gcc
+CFLAGS := -Wall
+INCLUDE := ../../../src/cpu.c ../../../src/instructions.c
+unity := ../../src/unity.c
 
-all: ASL ROL LSR ROR STX LDX DEC INC
+all: asl rol lsr ror stx ldx dec inc
 	@echo "All group one tests compiled!"
 
-ASL: $(unity) asl.c
-	@gcc $(unity) asl.c -o asl.out -Wall
-
-ROL: $(unity) rol.c
-	@gcc $(unity) rol.c -o rol.out -Wall
-
-LSR: $(unity) lsr.c
-	@gcc $(unity) lsr.c -o lsr.out -Wall
-
-ROR: $(unity) ror.c
-	@gcc $(unity) ror.c -o ror.out -Wall
-
-STX: $(unity) stx.c
-	@gcc $(unity) stx.c -o stx.out -Wall
-
-LDX: $(unity) ldx.c
-	@gcc $(unity) ldx.c -o ldx.out -Wall
-
-DEC: $(unity) dec.c
-	@gcc $(unity) dec.c -o dec.out -Wall
-
-INC: $(unity) inc.c
-	@gcc $(unity) inc.c -o inc.out -Wall
+%: %.c $(unity) $(INCLUDE)
+	@$(CC) -o $@.out $^ $(CFLAGS)
 
 run: clean all
 	@echo "\nRunning ASL tests..."
@@ -46,4 +28,4 @@ run: clean all
 	@./inc.out
 
 clean:
-	@find . -name "*.out" -type f -delete
+	@rm -f *.out all

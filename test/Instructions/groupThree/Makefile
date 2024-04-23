@@ -1,25 +1,13 @@
-unity := ../../src/unity.c ../../../src/cpu.c
+CC := gcc
+CFLAGS := -Wall
+INCLUDE := ../../../src/cpu.c ../../../src/instructions.c
+unity := ../../src/unity.c
 
-all: BIT JMP STY LDY CPY CPX
+all: bit jmp sty ldy cpy cpx
 	@echo "All group one tests compiled!"
 
-BIT: $(unity) bit.c
-	@gcc $(unity) bit.c -o bit.out -Wall
-
-JMP: $(unity) jmp.c
-	@gcc $(unity) jmp.c -o jmp.out -Wall
-
-STY: $(unity) sty.c
-	@gcc $(unity) sty.c -o sty.out -Wall
-
-LDY: $(unity) ldy.c
-	@gcc $(unity) ldy.c -o ldy.out -Wall
-
-CPY: $(unity) cpy.c
-	@gcc $(unity) cpy.c -o cpy.out -Wall
-
-CPX: $(unity) cpx.c
-	@gcc $(unity) cpx.c -o cpx.out -Wall
+%: %.c $(unity) $(INCLUDE)
+	@$(CC) -o $@.out $^ $(CFLAGS)
 
 run: clean all
 	@echo "\nRunning BIT tests..."
@@ -36,4 +24,4 @@ run: clean all
 	@./cpx.out
 
 clean:
-	@find . -name "*.out" -type f -delete
+	@rm -f *.out all

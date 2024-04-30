@@ -1,93 +1,60 @@
 #include "../include/cpu.h"
-#include "../include/opcodes.h"
 #include "../include/instructions.h"
+#include "../include/opcodes.h"
 
-/* Initilaztions */
+/* CPU Structure */
 
-// Define and initilize the registers
-word PC = 0;
-byte SP = 0;
-byte A = 0;
-byte X = 0;
-byte Y = 0;
-byte PS = 0;
+/** Initialize CPU
+ * Initialize all registers to 0, except SP to 0xFF and PC to reset vector
+ * Initialize memory to 0
+ */
+void initializeCPU(CPU_t *cpu) {
+    cpu->PC = 0;
+    cpu->SP = 0;
+    cpu->A = 0;
+    cpu->X = 0;
+    cpu->Y = 0;
+    cpu->PS = 0;
+    cpu->memory = (byte *)malloc(0x10000 * sizeof(byte));
 
-// PS Flags
-#define C (PS & 0x01)  // Carry
-#define Z (PS & 0x02)  // Zero
-#define I (PS & 0x04)  // Interrupt Disable
-#define D (PS & 0x08)  // Decimal Mode
-#define B (PS & 0x10)  // Break Command
-#define V (PS & 0x40)  // Overflow
-#define N (PS & 0x80)  // Negative
+    resetCPU(cpu);
+    resetMemory(cpu, 0);
+}
 
-// Initilize the memory - From 0x0000 to 0xFFFF, 0x10000 bytes
-byte memory[0x10000];
-
-/* There are 8 possible addressing modes
-but not all instructions are able to use all */
-// Valid addressing modes for G1
-byte validAddrModesG1[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFB, 0xFF, 0xFF, 0xFF};
-// Valid addressing modes for G2
-byte validAddrModesG2[] = {0xAE, 0xAE, 0xAE, 0xAE, 0x2A, 0xAB, 0xAA, 0xAA};
-// Valid addressing modes for G3
-byte validAddrModesG3[] = {0x00, 0x0A, 0x08, 0x08, 0x2A, 0xAB, 0x0B, 0x0B};
-
-/* Getters */
-
-const word readPC() { return PC; }
-const byte readSP() { return SP; }
-const byte readA() { return A; }
-const byte readX() { return X; }
-const byte readY() { return Y; }
-const byte readPS() { return PS; }
-
-/* Setters */
-
-void writePC(word v) { PC = v; }
-void writeSP(byte v) { SP = v; }
-void writeA(byte v) { A = v; }
-void writeX(byte v) { X = v; }
-void writeY(byte v) { Y = v; }
-void writePS(byte v) { PS = v; }
-
-/* General Purpose Functionalities */
+/** Free CPU */
+void freeCPU(CPU_t *cpu) { free(cpu->memory); }
 
 /** Set PC to reset vector
  * Set SP to 0xFF (0x1FF)
  * Reset A, X, Y registers to 0
  */
-void resetCPU() {
+void resetCPU(CPU_t *cpu) {
     // Set the program counter to the reset vector
     // 6502 CPU starts at 0xFFFC and 0xFFFD
     // and it's a little endian system
-    PC = (memory[0xFFFD] << 8) | memory[0xFFFC];
+    cpu->PC = (cpu->memory[0xFFFD] << 8) | cpu->memory[0xFFFC];
 
     // Set the stack pointer to 0x01FF (0xFF)
-    SP = 0xFF;
+    cpu->SP = 0xFF;
 
     // Set the registers to 0
-    A = 0;
-    X = 0;
-    Y = 0;
+    cpu->A = 0;
+    cpu->X = 0;
+    cpu->Y = 0;
 }
 
 /** Clear all memory to 0 */
-void resetMemory(byte v) {
+void resetMemory(CPU_t *cpu, byte v) {
     // Set all the memory to 0
-    for (int i = 0; i < 0x10000; i++) {
-        memory[i] = v;
-    }
+    for (int i = 0; i < 0x10000; i++) cpu->memory[i] = v;
 }
 
 /** Set memory to the given */
-void setMemory(byte newMem[]) {
-    for (int i = 0; i < 0x10000; i++) {
-        memory[i] = newMem[i];
-    }
+void setMemory(CPU_t *cpu, byte newMem[]) {
+    for (int i = 0; i < 0x10000; i++) cpu->memory[i] = newMem[i];
 }
 
-void readMemoryFromFile(char *fileName) {
+void readMemoryFromFile(CPU_t *cpu, char *fileName) {
     FILE *file = fopen(fileName, "r");
 
     if (file == NULL) {
@@ -99,41 +66,35 @@ void readMemoryFromFile(char *fileName) {
     word idx = 0;
     while (!feof(file) && idx <= 0xFFFF) {
         m = fgetc(file);
-        memory[idx] = (int8_t)m;
+        cpu->memory[idx] = (int8_t)m;
         idx++;
     }
+    fclose(file);
 
     printf("Loaded memory from file \"%s\"\n", fileName);
-
-    fclose(file);
 }
 
-/** Clear the memory
- * Set/Load memory
- * Reset the CPU
- */
-void initlizeCPU(byte mem[], char *fileName) {
-    resetMemory(0);
-    // printf("Cleared existing memory.\n");
+const word readPC(CPU_t *cpu) { return cpu->PC; }
+const byte readSP(CPU_t *cpu) { return cpu->SP; }
+const byte readA(CPU_t *cpu) { return cpu->A; }
+const byte readX(CPU_t *cpu) { return cpu->X; }
+const byte readY(CPU_t *cpu) { return cpu->Y; }
+const byte readPS(CPU_t *cpu) { return cpu->PS; }
 
-    if (fileName == NULL) {
-        setMemory(mem);
-        // printf("Set given memory.\n");
-    }
-    else {
-        readMemoryFromFile(fileName);
-        // printf("Load given memory.\n");
-    }
+/* Setters */
 
-    resetCPU();
-    // printf("Reset registers. CPU is ready to run.\n");
-}
+void writePC(CPU_t *cpu, word v) { cpu->PC = v; }
+void writeSP(CPU_t *cpu, byte v) { cpu->SP = v; }
+void writeA(CPU_t *cpu, byte v) { cpu->A = v; }
+void writeX(CPU_t *cpu, byte v) { cpu->X = v; }
+void writeY(CPU_t *cpu, byte v) { cpu->Y = v; }
+void writePS(CPU_t *cpu, byte v) { cpu->PS = v; }
 
 /** Read one byte from the memory */
-byte readMemory(word addr) { return memory[addr]; }
+byte readMemory(CPU_t *cpu, word addr) { return cpu->memory[addr]; }
 
 /** Write one byte to given memory index */
-void writeMemory(word addr, byte data) { memory[addr] = data; }
+void writeMemory(CPU_t *cpu, word addr, byte data) { cpu->memory[addr] = data; }
 
 /** Read one byte from the given address */
 byte readByte(byte *addr) { return *addr; }
@@ -142,163 +103,169 @@ byte readByte(byte *addr) { return *addr; }
 void writeByte(byte *addr, byte data) { *addr = data; }
 
 /** Read two consecutive bytes (16-bit full address) from the memory */
-word readWord(word addr) { return (memory[addr + 1] << 8) | memory[addr]; }
+word readWord(CPU_t *cpu, word addr) { return (cpu->memory[addr + 1] << 8) | cpu->memory[addr]; }
 
 /** Set/Reset negative flag */
-void setNegativeFlag(bool value) {
+void setNegativeFlag(CPU_t *cpu, bool value) {
     if (value)
-        PS |= 0x80;
+        cpu->PS |= 0x80;
     else
-        PS &= 0x7F;
+        cpu->PS &= 0x7F;
 }
 
 /** Set/Reset overflow flag */
-void setOverflowFlag(bool value) {
+void setOverflowFlag(CPU_t *cpu, bool value) {
     if (value)
-        PS |= 0x40;
+        cpu->PS |= 0x40;
     else
-        PS &= 0xBF;
+        cpu->PS &= 0xBF;
 }
 
 /** Set/Reset zero flag */
-void setZeroFlag(bool value) {
+void setZeroFlag(CPU_t *cpu, bool value) {
     if (value)
-        PS |= 0x02;
+        cpu->PS |= 0x02;
     else
-        PS &= 0xFD;
+        cpu->PS &= 0xFD;
 }
 
 /** Set/Reset carry flag */
-void setCarryFlag(bool value) {
+void setCarryFlag(CPU_t *cpu, bool value) {
     if (value)
-        PS |= 0x01;
+        cpu->PS |= 0x01;
     else
-        PS &= 0xFE;
+        cpu->PS &= 0xFE;
 }
 
-/* Decoders */
+/* Fetch - Decode - Execute */
+
+/** There are 8 possible addressing modes but not all instructions are able to use all */
+// Valid addressing modes for G1
+byte validAddrModesG1[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFB, 0xFF, 0xFF, 0xFF};
+// Valid addressing modes for G2
+byte validAddrModesG2[] = {0xAE, 0xAE, 0xAE, 0xAE, 0x2A, 0xAB, 0xAA, 0xAA};
+// Valid addressing modes for G3
+byte validAddrModesG3[] = {0x00, 0x0A, 0x08, 0x08, 0x2A, 0xAB, 0x0B, 0x0B};
 
 /** Validators */
 bool validateOpcode(byte aaa, byte bbb, byte validAddrModes[]) { return validAddrModes[aaa] & (1 << bbb); }
 
 /** Decode Group 1 Address Mode */
-byte *decodeG1AddressMode(byte bbb) {
+byte *decodeG1AddressMode(byte bbb, CPU_t *cpu) {
     word addr;
     switch (bbb) {
         case 0:  // (Indirect, X)
-            addr = readMemory(PC) + X;
+            addr = readMemory(cpu, cpu->PC) + cpu->X;
             addr &= 0xFF;  // The address calculation wraps around
-            addr = readWord(addr);
-            PC++;
+            addr = readWord(cpu, addr);
+            cpu->PC++;
             break;
         case 1:  // Zero Page
-            addr = readMemory(PC);
-            PC++;
+            addr = readMemory(cpu, cpu->PC);
+            cpu->PC++;
             break;
         case 2:  // Immediate
-            addr = PC;
-            PC++;
+            addr = cpu->PC;
+            cpu->PC++;
             break;
         case 3:  // Absolute
-            addr = readWord(PC);
-            PC += 2;
+            addr = readWord(cpu, cpu->PC);
+            cpu->PC += 2;
             break;
         case 4:  // (Indirect), Y
-            addr = readMemory(PC);
-            addr = readWord(addr);
-            addr += Y;
-            PC++;
+            addr = readMemory(cpu, cpu->PC);
+            addr = readWord(cpu, addr);
+            addr += cpu->Y;
+            cpu->PC++;
             break;
         case 5:  // Zero Page, X
-            addr = (readMemory(PC) + X);
+            addr = (readMemory(cpu, cpu->PC) + cpu->X);
             addr &= 0xFF;  // The address calculation wraps around
-            PC++;
+            cpu->PC++;
             break;
         case 6:  // Absolute, Y
-            addr = readWord(PC) + Y;
-            PC += 2;
+            addr = readWord(cpu, cpu->PC) + cpu->Y;
+            cpu->PC += 2;
             break;
         case 7:  // Absolute, X
-            addr = readWord(PC) + X;
-            PC += 2;
+            addr = readWord(cpu, cpu->PC) + cpu->X;
+            cpu->PC += 2;
             break;
         default:
             fprintf(stderr, "Invalid bbb value: %d\n", bbb);
             exit(1);
     }
 
-    return memory + addr;
+    return cpu->memory + addr;
 }
 
 /** Decode Group 2 and Group 3 Address Mode */
-byte *decodeG23AddressMode(byte bbb, byte aaa) {
+byte *decodeG23AddressMode(byte bbb, byte aaa, CPU_t *cpu) {
     word addr;
     switch (bbb) {
         case 0:  // Immediate
-            addr = PC;
-            PC++;
+            addr = cpu->PC;
+            cpu->PC++;
             break;
         case 1:  // Zero Page
-            addr = readMemory(PC);
-            PC++;
+            addr = readMemory(cpu, cpu->PC);
+            cpu->PC++;
             break;
         case 2:  // Accumulator
-            return &A;
+            return &cpu->A;
             break;
         case 3:  // Absolute
-            addr = readWord(PC);
-            PC += 2;
+            addr = readWord(cpu, cpu->PC);
+            cpu->PC += 2;
             break;
         case 5:  // Zero Page, X / Zero Page, Y
-            addr = readMemory(PC);
+            addr = readMemory(cpu, cpu->PC);
             // On STX and LDX ZP,X becomes ZP,Y (only in G2)
-            addr += (aaa == 4 || aaa == 5) ? Y : X;
+            addr += (aaa == 4 || aaa == 5) ? cpu->Y : cpu->X;
             addr &= 0xFF;  // The address calculation wraps around
-            PC++;
+            cpu->PC++;
             break;
         case 7:  // Absolute, X / Absolute Y
-            addr = readWord(PC);
+            addr = readWord(cpu, cpu->PC);
             // On LDX ABS,X becomes ABS,Y
             // Only in G2
-            addr += (aaa == 5) ? Y : X;
-            PC += 2;
+            addr += (aaa == 5) ? cpu->Y : cpu->X;
+            cpu->PC += 2;
             break;
         default:
             fprintf(stderr, "Invalid bbb value: %d\n", bbb);
             exit(1);
     }
 
-    return memory + addr;
+    return cpu->memory + addr;
 }
 
-/* Executers */
-
 /** Execute Group 1 Instructions */
-void decodeG1Instruction(byte aaa, byte *addr) {
+void decodeG1Instruction(byte aaa, byte *addr, CPU_t *cpu) {
     switch (aaa) {
         case 0:  // ORA
-            ORA(addr, &A);
+            ORA(addr, cpu);
             break;
         case 1:  // AND
-            AND(addr, &A);
+            AND(addr, cpu);
             break;
         case 2:  // EOR
-            EOR(addr, &A);
+            EOR(addr, cpu);
             break;
         case 3:  // ADC
-            ADC(addr, &A, &PS);
+            ADC(addr, cpu);
             break;
         case 4:  // STA
-            STA(addr, &A);
+            STA(addr, cpu);
             break;
         case 5:  // LDA
-            LDA(addr, &A);
+            LDA(addr, cpu);
             break;
         case 6:  // CMP
-            CMP(addr, &A);
+            CMP(addr, cpu);
             break;
         case 7:  // SBC
-            SBC(addr, &A, &PS);
+            SBC(addr, cpu);
             break;
         default:
             fprintf(stderr, "Invalid aaa value: %d\n", aaa);
@@ -307,31 +274,31 @@ void decodeG1Instruction(byte aaa, byte *addr) {
 }
 
 /** Execute Group 2 Instructions */
-void decodeG2Instruction(byte aaa, byte *addr) {
+void decodeG2Instruction(byte aaa, byte *addr, CPU_t *cpu) {
     switch (aaa) {
         case 0:  // ASL
-            ASL(addr);
+            ASL(addr, cpu);
             break;
         case 1:  // ROL
-            ROL(addr, &PS);
+            ROL(addr, cpu);
             break;
         case 2:  // LSR
-            LSR(addr);
+            LSR(addr, cpu);
             break;
         case 3:  // ROR
-            ROR(addr, &PS);
+            ROR(addr, cpu);
             break;
         case 4:  // STX
-            STX(addr, &X);
+            STX(addr, cpu);
             break;
         case 5:  // LDX
-            LDX(addr, &X);
+            LDX(addr, cpu);
             break;
         case 6:  // DEC
-            DEC(addr);
+            DEC(addr, cpu);
             break;
         case 7:  // INC
-            INC(addr);
+            INC(addr, cpu);
             break;
         default:
             fprintf(stderr, "Invalid aaa value: %d\n", aaa);
@@ -340,29 +307,29 @@ void decodeG2Instruction(byte aaa, byte *addr) {
 }
 
 /** Execute Group 3 Instructions */
-void decodeG3Instruction(byte aaa, byte *addr) {
+void decodeG3Instruction(byte aaa, byte *addr, CPU_t *cpu) {
     switch (aaa) {
         case 1:  // BIT
-            BIT(addr, &A);
+            BIT(addr, cpu);
             break;
         case 2:  // JMP
-            JMP(addr, &PC, memory);
+            JMP(addr, cpu);
             break;
         case 3:  // JMP()
-            addr = memory + ((*(addr + 1) << 8) | (*addr));
-            JMP(addr, &PC, memory);
+            addr = cpu->memory + ((*(addr + 1) << 8) | (*addr));
+            JMP(addr, cpu);
             break;
         case 4:  // STY
-            STY(addr, &Y);
+            STY(addr, cpu);
             break;
         case 5:  // LDY
-            LDY(addr, &Y);
+            LDY(addr, cpu);
             break;
         case 6:  // CPY
-            CPY(addr, &Y);
+            CPY(addr, cpu);
             break;
         case 7:  // CPX
-            CPX(addr, &X);
+            CPX(addr, cpu);
             break;
         default:
             fprintf(stderr, "Invalid aaa value: %d\n", aaa);
@@ -371,10 +338,10 @@ void decodeG3Instruction(byte aaa, byte *addr) {
 }
 
 /** Fetch, Decode, and Execute single instruction */
-void execute() {
+void execute(CPU_t *cpu) {
     // Fetch
-    byte opcode = memory[PC];
-    PC++;  // Increment the program counter
+    byte opcode = cpu->memory[cpu->PC];
+    cpu->PC++;  // Increment the program counter
 
     // Decode
     byte lowNibble = opcode & 0x0F;
@@ -405,8 +372,8 @@ void execute() {
                     exit(1);
                 }
 
-                addr = decodeG1AddressMode(bbb);  // Decode the addressing mode
-                decodeG1Instruction(aaa, addr);   // Execute the instruction
+                addr = decodeG1AddressMode(bbb, cpu);  // Decode the addressing mode
+                decodeG1Instruction(aaa, addr, cpu);   // Execute the instruction
                 break;
             case 2:  // Group 2 instructions
                 // Validate addressing mode exists for the instruction (NOP)
@@ -415,8 +382,8 @@ void execute() {
                     exit(1);
                 }
 
-                addr = decodeG23AddressMode(bbb, aaa);  // Decode the addressing mode
-                decodeG2Instruction(aaa, addr);         // Execute the instruction
+                addr = decodeG23AddressMode(bbb, aaa, cpu);  // Decode the addressing mode
+                decodeG2Instruction(aaa, addr, cpu);         // Execute the instruction
                 break;
             case 0:  // Group 3, branch, and inturrupt/subroutine instructions
                 if (bbb == 4) {
@@ -433,9 +400,9 @@ void execute() {
                         exit(1);
                     }
 
-                    addr = decodeG23AddressMode(bbb, -1);  // Decode the addressing mode
-                                                           // Pass -1 for second parameter to avoid X-Y change needed for G2
-                    decodeG3Instruction(aaa, addr);        // Execute the instruction
+                    addr = decodeG23AddressMode(bbb, -1, cpu);  // Decode the addressing mode
+                                                                // Pass -1 for second parameter to avoid X-Y change needed for G2
+                    decodeG3Instruction(aaa, addr, cpu);        // Execute the instruction
                 }
                 break;
             default:

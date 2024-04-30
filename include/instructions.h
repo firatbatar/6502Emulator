@@ -3,29 +3,29 @@
 
 #include "cpu.h"
 
-void ORA(byte *addr, byte *accumalatorAddr);
-void AND(byte *addr, byte *accumalatorAddr);
-void EOR(byte *addr, byte *accumalatorAddr);
-void ADC(byte *addr, byte *accumalatorAddr, byte *psAddr);
-void STA(byte *addr, byte *accumalatorAddr);
-void LDA(byte *addr, byte *accumalatorAddr);
-void CMP(byte *addr, byte *accumalatorAddr);
-void SBC(byte *addr, byte *accumalatorAddr, byte *psAddr);
+void ORA(byte *addr, CPU_t *cpu);
+void AND(byte *addr, CPU_t *cpu);
+void EOR(byte *addr, CPU_t *cpu);
+void ADC(byte *addr, CPU_t *cpu);
+void STA(byte *addr, CPU_t *cpu);
+void LDA(byte *addr, CPU_t *cpu);
+void CMP(byte *addr, CPU_t *cpu);
+void SBC(byte *addr, CPU_t *cpu);
 
-void ASL(byte *addr);
-void ROL(byte *addr, byte *psAddr);
-void LSR(byte *addr);
-void ROR(byte *addr, byte *psAddr);
-void STX(byte *addr, byte *xAddr);
-void LDX(byte *addr, byte *xAddr);
-void DEC(byte *addr);
-void INC(byte *addr);
+void ASL(byte *addr, CPU_t *cpu);
+void ROL(byte *addr, CPU_t *cpu);
+void LSR(byte *addr, CPU_t *cpu);
+void ROR(byte *addr, CPU_t *cpu);
+void STX(byte *addr, CPU_t *cpu);
+void LDX(byte *addr, CPU_t *cpu);
+void DEC(byte *addr, CPU_t *cpu);
+void INC(byte *addr, CPU_t *cpu);
 
-void BIT(byte *addr, byte *accumalatorAddr);
-void JMP(byte *addr, word *pcAddr, byte *memory);
-void STY(byte *addr, byte *yAddr);
-void LDY(byte *addr, byte *yAddr);
-void CPY(byte *addr, byte *yAddr);
-void CPX(byte *addr, byte *xAddr);
+void BIT(byte *addr, CPU_t *cpu);
+void JMP(byte *addr, CPU_t *cpu);
+void STY(byte *addr, CPU_t *cpu);
+void LDY(byte *addr, CPU_t *cpu);
+void CPY(byte *addr, CPU_t *cpu);
+void CPX(byte *addr, CPU_t *cpu);
 
 #endif  // INSTRUCTIONS_H

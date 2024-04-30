@@ -24,11 +24,12 @@
 #include "../../../include/opcodes.h"
 #include "../../src/unity.h"
 #include "../../src/unity_internals.h"
+#include "../templates/initCPU.h"
 
 #define INSTRUCTION_ZP INS_BIT_ZP
 #define INSTRUCTION_ABS INS_BIT_ABS
 
-#define SETUP_CONFIG_C writeA(0x0A);
+#define SETUP_CONFIG_C writeA(&cpu, 0x0A);
 #define TEARDOWN_CONFIG_C
 
 #define FIRST_DATA 0x00
@@ -43,11 +44,11 @@
         sprintf(msg3, "Overflow flag isn't right in %s instruction for %s.", number, addressing); \
         sprintf(msg4, "Zero flag isn't right in %s instruction for %s.", number, addressing);     \
         sprintf(msg5, "Negative flag isn't right in %s instruction for %s.", number, addressing); \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readMemory(address), msg1);                           \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x0A, readA(), msg2);                                      \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(v, readPS() & VM, msg3);                                   \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS() & ZM, msg4);                                   \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(n, readPS() & NM, msg5);                                   \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readMemory(&cpu, address), msg1);                     \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x0A, readA(&cpu), msg2);                                  \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(v, readPS(&cpu) & VM, msg3);                               \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS(&cpu) & ZM, msg4);                               \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(n, readPS(&cpu) & NM, msg5);                               \
     }
 
 #define FIRST_TEST_ZP TEST("first", "ZP", 0x0010, FIRST_DATA, 0x00, ZM, 0x00)

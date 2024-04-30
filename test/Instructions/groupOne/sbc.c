@@ -23,10 +23,11 @@
 #include "../../../include/opcodes.h"
 #include "../../src/unity.h"
 #include "../../src/unity_internals.h"
+#include "../templates/initCPU.h"
 
-#define SETUP_CONFIG_C      \
-    writePS(readPS() | CM); \
-    writeA(0x7F);
+#define SETUP_CONFIG_C                \
+    writePS(&cpu, readPS(&cpu) | CM); \
+    writeA(&cpu, 0x7F);
 #define TEARDOWN_CONFIG_C
 
 #define INSTRUCTION_IM INS_SBC_IM
@@ -52,11 +53,11 @@
         sprintf(msg3, "Overflow flag isn't right in first instruction for %s.", addressing); \
         sprintf(msg4, "Zero flag isn't right in first instruction for %s.", addressing);     \
         sprintf(msg5, "Negative flag isn't right in first instruction for %s.", addressing); \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readA(), msg1);                                 \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(CM, readPS() & CM, msg2);                             \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & VM, msg3);                           \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(ZM, readPS() & ZM, msg4);                             \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & NM, msg5);                           \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readA(&cpu), msg1);                             \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(CM, readPS(&cpu) & CM, msg2);                         \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & VM, msg3);                       \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(ZM, readPS(&cpu) & ZM, msg4);                         \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & NM, msg5);                       \
     }
 
 #define SECOND_INSTRUCTION_TEST(addressing)                                                   \
@@ -67,11 +68,11 @@
         sprintf(msg3, "Overflow flag isn't right in second instruction for %s.", addressing); \
         sprintf(msg4, "Zero flag isn't right in second instruction for %s.", addressing);     \
         sprintf(msg5, "Negative flag isn't right in second instruction for %s.", addressing); \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x0F, readA(), msg1);                                  \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & CM, msg2);                            \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & VM, msg3);                            \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & ZM, msg4);                            \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & NM, msg5);                            \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x0F, readA(&cpu), msg1);                              \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & CM, msg2);                        \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & VM, msg3);                        \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & ZM, msg4);                        \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & NM, msg5);                        \
     }
 
 #define THIRD_INSTRUCTION_TEST(addressing)                                                   \
@@ -82,11 +83,11 @@
         sprintf(msg3, "Overflow flag isn't right in third instruction for %s.", addressing); \
         sprintf(msg4, "Zero flag isn't right in third instruction for %s.", addressing);     \
         sprintf(msg5, "Negative flag isn't right in third instruction for %s.", addressing); \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x8E, readA(), msg1);                                 \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & CM, msg2);                           \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(VM, readPS() & VM, msg3);                             \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & ZM, msg4);                           \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(NM, readPS() & NM, msg5);                             \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x8E, readA(&cpu), msg1);                             \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & CM, msg2);                       \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(VM, readPS(&cpu) & VM, msg3);                         \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & ZM, msg4);                       \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(NM, readPS(&cpu) & NM, msg5);                         \
     }
 
 #include "../templates/testTemplate.h"

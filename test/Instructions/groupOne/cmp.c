@@ -23,8 +23,9 @@
 #include "../../../include/opcodes.h"
 #include "../../src/unity.h"
 #include "../../src/unity_internals.h"
+#include "../templates/initCPU.h"
 
-#define SETUP_CONFIG_C writeA(0x0F);
+#define SETUP_CONFIG_C writeA(&cpu, 0x0F);
 #define TEARDOWN_CONFIG_C
 
 #define INSTRUCTION_IM INS_CMP_IM
@@ -51,10 +52,10 @@
         sprintf(msg3, "Zero flag isn't right in first instruction for %s.", addressing);     \
         sprintf(msg4, "Negative flag isn't right in first instruction for %s.", addressing); \
                                                                                              \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x0F, readA(), msg1);                                 \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(CM, readPS() & CM, msg2);                             \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(ZM, readPS() & ZM, msg3);                             \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & NM, msg4);                           \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x0F, readA(&cpu), msg1);                             \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(CM, readPS(&cpu) & CM, msg2);                         \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(ZM, readPS(&cpu) & ZM, msg3);                         \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & NM, msg4);                       \
     }
 
 #define SECOND_INSTRUCTION_TEST(addressing)                                                   \
@@ -66,10 +67,10 @@
         sprintf(msg3, "Zero flag isn't right in second instruction for %s.", addressing);     \
         sprintf(msg4, "Negative flag isn't right in second instruction for %s.", addressing); \
                                                                                               \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x0F, readA(), msg1);                                  \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(CM, readPS() & CM, msg2);                              \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & ZM, msg3);                            \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & NM, msg4);                            \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x0F, readA(&cpu), msg1);                              \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(CM, readPS(&cpu) & CM, msg2);                          \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & ZM, msg3);                        \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & NM, msg4);                        \
     }
 
 #define THIRD_INSTRUCTION_TEST(addressing)                                                   \
@@ -81,10 +82,10 @@
         sprintf(msg3, "Zero flag isn't right in third instruction for %s.", addressing);     \
         sprintf(msg4, "Negative flag isn't right in third instruction for %s.", addressing); \
                                                                                              \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x0F, readA(), msg1);                                 \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & CM, msg2);                           \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS() & ZM, msg3);                           \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(NM, readPS() & NM, msg4);                             \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x0F, readA(&cpu), msg1);                             \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & CM, msg2);                       \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & ZM, msg3);                       \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(NM, readPS(&cpu) & NM, msg4);                         \
     }
 
 #include "../templates/testTemplate.h"

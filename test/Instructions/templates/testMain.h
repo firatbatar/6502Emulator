@@ -78,6 +78,8 @@ void test_accumulator(void) { A_TEST }
 #endif
 
 int main(void) {
+    initializeCPU(&cpu);  // Initialize CPU
+
     UNITY_BEGIN();
 
     #ifdef IM_TEST

@@ -21,6 +21,7 @@
 #include "../../../include/opcodes.h"
 #include "../../src/unity.h"
 #include "../../src/unity_internals.h"
+#include "../templates/initCPU.h"
 
 #define INSTRUCTION_ZP INS_DEC_ZP
 #define INSTRUCTION_ABS INS_DEC_ABS
@@ -40,9 +41,9 @@
         sprintf(msg1, "Memory isn't right in %s instruction for %s.", number, addressing);        \
         sprintf(msg2, "Zero flag isn't right in %s instruction for %s.", number, addressing);     \
         sprintf(msg3, "Negative flag isn't right in %s instruction for %s.", number, addressing); \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readMemory(address), msg1);                           \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS() & ZM, msg2);                                   \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(n, readPS() & NM, msg3);                                   \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readMemory(&cpu, address), msg1);                     \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS(&cpu) & ZM, msg2);                               \
+        TEST_ASSERT_EQUAL_HEX8_MESSAGE(n, readPS(&cpu) & NM, msg3);                               \
     }
 
 #define FIRST_TEST_ZP TEST("first", "ZP", 0x0010, 0x00, ZM, 0x00)

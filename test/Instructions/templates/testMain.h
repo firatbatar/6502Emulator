@@ -130,6 +130,8 @@ int main(void) {
     #ifdef A_TEST
     RUN_TEST(test_accumulator);
     #endif
+    
+    freeCPU(&cpu);  // Free CPU
 
     return UNITY_END();
 }

@@ -1,0 +1,4 @@
+include/*.h linguist-language=C
+test/Instructions/templates/*.h linguist-language=C
+test/src/unity_internals.h linguist-language=C
+test/src/unity.h linguist-language=C

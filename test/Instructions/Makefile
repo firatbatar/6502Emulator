@@ -1,8 +1,3 @@
-CC := gcc
-CLFAGS := -g -Wall
-source := ../../src/cpu.c ../../instructions.c
-unity := ../src/unity.c
-
 all: .groupOne .groupTwo .groupThree
 
 .groupOne:

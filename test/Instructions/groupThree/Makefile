@@ -1,12 +1,12 @@
 CC := gcc
-CFLAGS := -Wall
-INCLUDE := ../../../src/cpu.c ../../../src/instructions.c
+CFLAGS := -Wall -I../../../include
+SRC := ../../../src/cpu.c ../../../src/instructions.c
 unity := ../../src/unity.c
 
 all: bit jmp sty ldy cpy cpx
 	@echo "All group one tests compiled!"
 
-%: %.c $(unity) $(INCLUDE)
+%: %.c $(unity) $(SRC)
 	@$(CC) -o $@.out $^ $(CFLAGS)
 
 run: clean all

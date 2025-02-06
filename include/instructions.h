@@ -3,147 +3,167 @@
 
 #include "cpu.h"
 
-/** A bitwise OR on the accumulator using the contents of a byte of memory.
+/** Glossary
+ * A - Accumulator
+ * X - X Register
+ * Y - Y Register
+ * M - Memory
+ * PS - Processor Status
+ * N - Negative
+ * V - Overflow
+ * B - Break Command
+ * D - Decimal Mode
+ * I - Interrupt Disable
+ * Z - Zero
+ * C - Carry
+ * PC - Program Counter
+ * SP - Stack Pointer
+ */
+
+/** A bitwise OR on A using the contents of M.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read A from.
-*/
+ */
 void ORA(byte *addr, CPU_t *cpu);
 
-/** A bitwise AND on the accumulator using the contents of a byte of memory.
+/** A bitwise AND on A using the contents of M.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read A from.
-*/
+ */
 void AND(byte *addr, CPU_t *cpu);
 
-/** A bitwise exclusive OR is performed on the accumulator using the contents of a byte of memory.
+/** A bitwise exclusive OR is performed on A using the contents of M.
  * @param addr Address to read from.
- * @param cpu CPU_t struct to read A from. 
-*/
+ * @param cpu CPU_t struct to read A from.
+ */
 void EOR(byte *addr, CPU_t *cpu);
 
-/** Adds the contents of a memory location to the accumulator together with the carry bit. 
- * If overflow occurs the carry bit is set, this enables multiple byte addition to be performed.
+/** Adds the contents of M to A together with C.
+ * If overflow occurs the C is set, this enables multiple byte addition to be performed.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read A and PS from.
-*/
+ */
 void ADC(byte *addr, CPU_t *cpu);
 
-/** Stores the contents of the accumulator into memory.
+/** Stores the contents of A into M.
  * @param addr Address to write to.
  * @param cpu CPU_t struct to read A from.
-*/
+ */
 void STA(byte *addr, CPU_t *cpu);
 
-/** Loads a byte of memory into the accumulator setting the zero and negative flags as appropriate.
+/** Loads a byte of M into A setting Z and N as appropriate.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read/write A PS from/to.
-*/
+ */
 void LDA(byte *addr, CPU_t *cpu);
 
-/** Compares the contents of the accumulator with another memory held value and sets the zero, negative, and carry flags as appropriate.
+/** Compares the contents of A with another M held value.
+ * Sets the Z, N, and C as appropriate.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read/write A and PS from/to.
-*/
+ */
 void CMP(byte *addr, CPU_t *cpu);
 
-/** Subtracts the contents of a memory location to the accumulator together with the compliment of the carry bit.
- * If overflow occurs the carry bit is reset, this enables multiple byte subtraction to be performed.
+/** Subtracts the contents of M from A together with the compliment of C.
+ * If overflow occurs C is reset, this enables multiple byte subtraction to be performed.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read/write A and PS from/to.
-*/
+ */
 void SBC(byte *addr, CPU_t *cpu);
 
-/** Shifts the bits of the accumulator or memory one bit left.
- * Bit 0 is set to zero and bit 7 is placed in the carry flag.
+/** Shifts the bits of A or M one bit left.
+ * Bit 0 is set to zero and bit 7 is placed into C.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read/write A and PS from/to.
-*/
+ */
 void ASL(byte *addr, CPU_t *cpu);
 
-/** Rotates the bits of the accumulator or memory one place to the left.
- * Bit 0 is filled with the current value of the carry flag whilst the old bit 7 becomes the new carry flag value.
- * Set zero flag if result is zero, otherwise reset. Negative flag is equal to bit 7 of the result.
+/** Rotates the bits of A or M one place to the left.
+ * Bit 0 is filled with the current value of the C whilst the old bit 7 becomes the new C.
+ * Set Z if result is zero, otherwise reset. N is equal to bit 7 of the result.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read/write A and PS from/to.
-*/
+ */
 void ROL(byte *addr, CPU_t *cpu);
 
-/** Shifts the bits of the accumulator or memory one bit right. 
- * The bit that was in bit 0 is shifted into the carry flag. Bit 7 is set to zero.
- * Set zero flag if result is zero, otherwise reset. Negative flag is always reset.
- * @param addr Address to read from.
- * @param cpu CPU_t struct to read/write A and PS from/to. 
-*/
-void LSR(byte *addr, CPU_t *cpu);
-
-/** Rotates the bits of the accumulator or memory one place to the right.
- * Bit 7 is filled with the current value of the carry flag whilst the old bit 0 becomes the new carry flag value.
- * Set zero flag if result is zero, otherwise reset. Negative flag is equal to bit 7 of the result.
+/** Shifts the bits of the A or M one bit right.
+ * The bit that was in bit 0 is shifted into C. Bit 7 is set to zero.
+ * Set Z if result is zero, otherwise reset. N is always reset.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read/write A and PS from/to.
-*/
+ */
+void LSR(byte *addr, CPU_t *cpu);
+
+/** Rotates the bits of A or M one place to the right.
+ * Bit 7 is filled with the current value of the C whilst the old bit 0 becomes the new C.
+ * Set Z if result is zero, otherwise reset. N is equal to bit 7 of the result.
+ * @param addr Address to read from.
+ * @param cpu CPU_t struct to read/write A and PS from/to.
+ */
 void ROR(byte *addr, CPU_t *cpu);
 
-/** Stores the contents of the X register into memory.
+/** Stores the contents of the X register into M.
  * @param addr Address to write to.
  * @param cpu CPU_t struct to read X from.
-*/
+ */
 void STX(byte *addr, CPU_t *cpu);
 
-/** Loads a byte of memory into the X register setting the zero and negative flags as appropriate.
+/** Loads a byte of memory M into the X register setting the Z and N as appropriate.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read/write X and PS from/to.
-*/
+ */
 void LDX(byte *addr, CPU_t *cpu);
 
-/** Subtracts one from the value held at a specified memory location setting the zero and negative flags as appropriate.
+/** Subtracts one from the value held at M, setting the Z and N as appropriate.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read/write memory from/to.
-*/
+ */
 void DEC(byte *addr, CPU_t *cpu);
 
-/** Adds one to the value held at a specified memory location setting the zero and negative flags as appropriate.
+/** Adds one to the value held at M, setting the Z and N as appropriate.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read/write memory from/to.
-*/
+ */
 void INC(byte *addr, CPU_t *cpu);
 
-/** Test if one or more bits are set in a target memory location.
- * The mask pattern in A is ANDed with the value in memory to set or reset the zero flag, but the result is not kept.
- * Bits 7 and 6 of the value from memory are copied into the negative and overflow flags.
+/** Test if one or more bits are set in a target M.
+ * The mask pattern in A is ANDed with M to set or reset the Z, but the result is not kept.
+ * Bits 7 and 6 of the value from memory are copied into N and V flags.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read A and PS from.
-*/
+ */
 void BIT(byte *addr, CPU_t *cpu);
 
-/** Sets the program counter to the address specified by the operand.
+/** Sets PC to the address specified by the operand.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to write PC to.
-*/
+ */
 void JMP(byte *addr, CPU_t *cpu);
 
-/** Stores the contents of the Y register into memory.
+/** Stores the contents of the Y register into M.
  * @param addr Address to write to.
  * @param cpu CPU_t struct to read Y from.
-*/
+ */
 void STY(byte *addr, CPU_t *cpu);
 
-/** Loads a byte of memory into the Y register setting the zero and negative flags as appropriate.
+/** Loads a byte of M into the Y register setting Z and N as appropriate.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read/write Y and PS from/to.
-*/
+ */
 void LDY(byte *addr, CPU_t *cpu);
 
-/** Compares the contents of the Y register with another memory held value and sets the zero, negative, and carry flags as appropriate.
+/** Compares the contents of the Y register with another M held value.
+ * Sets Z, N, and C as appropriate.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read/write Y and PS from/to.
-*/
+ */
 void CPY(byte *addr, CPU_t *cpu);
 
-/** Compares the contents of the X register with another memory held value and sets the zero, negative, and carry flags as appropriate.
+/** Compares the contents of the X register with another M held value.
+ * Sets the Z, N, and C as appropriate.
  * @param addr Address to read from.
  * @param cpu CPU_t struct to read/write X and PS from/to.
-*/
+ */
 void CPX(byte *addr, CPU_t *cpu);
 
 #endif  // INSTRUCTIONS_H

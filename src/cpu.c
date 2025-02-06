@@ -1,13 +1,9 @@
-#include "../include/cpu.h"
-#include "../include/instructions.h"
-#include "../include/opcodes.h"
+#include <cpu.h>
+#include <instructions.h>
+#include <opcodes.h>
 
 /* CPU Structure */
 
-/** Initialize CPU
- * Initialize all registers to 0, except SP to 0xFF and PC to reset vector
- * Initialize memory to 0
- */
 void initializeCPU(CPU_t *cpu) {
     cpu->PC = 0;
     cpu->SP = 0;
@@ -21,13 +17,8 @@ void initializeCPU(CPU_t *cpu) {
     resetMemory(cpu, 0);
 }
 
-/** Free CPU */
 void freeCPU(CPU_t *cpu) { free(cpu->memory); }
 
-/** Set PC to reset vector
- * Set SP to 0xFF (0x1FF)
- * Reset A, X, Y registers to 0
- */
 void resetCPU(CPU_t *cpu) {
     // Set the program counter to the reset vector
     // 6502 CPU starts at 0xFFFC and 0xFFFD
@@ -43,13 +34,11 @@ void resetCPU(CPU_t *cpu) {
     cpu->Y = 0;
 }
 
-/** Clear all memory to 0 */
 void resetMemory(CPU_t *cpu, byte v) {
     // Set all the memory to 0
     for (int i = 0; i < 0x10000; i++) cpu->memory[i] = v;
 }
 
-/** Set memory to the given */
 void setMemory(CPU_t *cpu, byte newMem[]) {
     for (int i = 0; i < 0x10000; i++) cpu->memory[i] = newMem[i];
 }
@@ -81,8 +70,6 @@ const byte readX(CPU_t *cpu) { return cpu->X; }
 const byte readY(CPU_t *cpu) { return cpu->Y; }
 const byte readPS(CPU_t *cpu) { return cpu->PS; }
 
-/* Setters */
-
 void writePC(CPU_t *cpu, word v) { cpu->PC = v; }
 void writeSP(CPU_t *cpu, byte v) { cpu->SP = v; }
 void writeA(CPU_t *cpu, byte v) { cpu->A = v; }
@@ -90,22 +77,16 @@ void writeX(CPU_t *cpu, byte v) { cpu->X = v; }
 void writeY(CPU_t *cpu, byte v) { cpu->Y = v; }
 void writePS(CPU_t *cpu, byte v) { cpu->PS = v; }
 
-/** Read one byte from the memory */
 byte readMemory(CPU_t *cpu, word addr) { return cpu->memory[addr]; }
 
-/** Write one byte to given memory index */
 void writeMemory(CPU_t *cpu, word addr, byte data) { cpu->memory[addr] = data; }
 
-/** Read one byte from the given address */
 byte readByte(byte *addr) { return *addr; }
 
-/** Write one byte to the given address */
 void writeByte(byte *addr, byte data) { *addr = data; }
 
-/** Read two consecutive bytes (16-bit full address) from the memory */
 word readWord(CPU_t *cpu, word addr) { return (cpu->memory[addr + 1] << 8) | cpu->memory[addr]; }
 
-/** Set/Reset negative flag */
 void setNegativeFlag(CPU_t *cpu, bool value) {
     if (value)
         cpu->PS |= 0x80;
@@ -113,7 +94,6 @@ void setNegativeFlag(CPU_t *cpu, bool value) {
         cpu->PS &= 0x7F;
 }
 
-/** Set/Reset overflow flag */
 void setOverflowFlag(CPU_t *cpu, bool value) {
     if (value)
         cpu->PS |= 0x40;
@@ -121,7 +101,6 @@ void setOverflowFlag(CPU_t *cpu, bool value) {
         cpu->PS &= 0xBF;
 }
 
-/** Set/Reset zero flag */
 void setZeroFlag(CPU_t *cpu, bool value) {
     if (value)
         cpu->PS |= 0x02;
@@ -129,7 +108,6 @@ void setZeroFlag(CPU_t *cpu, bool value) {
         cpu->PS &= 0xFD;
 }
 
-/** Set/Reset carry flag */
 void setCarryFlag(CPU_t *cpu, bool value) {
     if (value)
         cpu->PS |= 0x01;
@@ -147,10 +125,10 @@ byte validAddrModesG2[] = {0xAE, 0xAE, 0xAE, 0xAE, 0x2A, 0xAB, 0xAA, 0xAA};
 // Valid addressing modes for G3
 byte validAddrModesG3[] = {0x00, 0x0A, 0x08, 0x08, 0x2A, 0xAB, 0x0B, 0x0B};
 
-/** Validators */
-bool validateOpcode(byte aaa, byte bbb, byte validAddrModes[]) { return validAddrModes[aaa] & (1 << bbb); }
+bool validateOpcode(byte aaa, byte bbb, byte validAddrModes[]) {
+    return validAddrModes[aaa] & (1 << bbb);
+}
 
-/** Decode Group 1 Address Mode */
 byte *decodeG1AddressMode(byte bbb, CPU_t *cpu) {
     word addr;
     switch (bbb) {
@@ -199,7 +177,6 @@ byte *decodeG1AddressMode(byte bbb, CPU_t *cpu) {
     return cpu->memory + addr;
 }
 
-/** Decode Group 2 and Group 3 Address Mode */
 byte *decodeG23AddressMode(byte bbb, byte aaa, CPU_t *cpu) {
     word addr;
     switch (bbb) {
@@ -240,7 +217,6 @@ byte *decodeG23AddressMode(byte bbb, byte aaa, CPU_t *cpu) {
     return cpu->memory + addr;
 }
 
-/** Execute Group 1 Instructions */
 void decodeG1Instruction(byte aaa, byte *addr, CPU_t *cpu) {
     switch (aaa) {
         case 0:  // ORA
@@ -273,7 +249,6 @@ void decodeG1Instruction(byte aaa, byte *addr, CPU_t *cpu) {
     }
 }
 
-/** Execute Group 2 Instructions */
 void decodeG2Instruction(byte aaa, byte *addr, CPU_t *cpu) {
     switch (aaa) {
         case 0:  // ASL
@@ -306,7 +281,6 @@ void decodeG2Instruction(byte aaa, byte *addr, CPU_t *cpu) {
     }
 }
 
-/** Execute Group 3 Instructions */
 void decodeG3Instruction(byte aaa, byte *addr, CPU_t *cpu) {
     switch (aaa) {
         case 1:  // BIT
@@ -337,7 +311,6 @@ void decodeG3Instruction(byte aaa, byte *addr, CPU_t *cpu) {
     }
 }
 
-/** Fetch, Decode, and Execute single instruction */
 void execute(CPU_t *cpu) {
     // Fetch
     byte opcode = cpu->memory[cpu->PC];
@@ -400,9 +373,11 @@ void execute(CPU_t *cpu) {
                         exit(1);
                     }
 
-                    addr = decodeG23AddressMode(bbb, -1, cpu);  // Decode the addressing mode
-                                                                // Pass -1 for second parameter to avoid X-Y change needed for G2
-                    decodeG3Instruction(aaa, addr, cpu);        // Execute the instruction
+                    addr = decodeG23AddressMode(
+                        bbb, -1,
+                        cpu);  // Decode the addressing mode
+                               // Pass -1 for second parameter to avoid X-Y change needed for G2
+                    decodeG3Instruction(aaa, addr, cpu);  // Execute the instruction
                 }
                 break;
             default:

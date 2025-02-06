@@ -9,11 +9,11 @@
 
 /** Each test will perform two LSR instructions
  * 1. LSR (0000 0001) -> FIRST_DATA
- * 2. LSR (0000 0010) -> SECOND_DATA
+ * 2. LSR (1000 0000) -> SECOND_DATA
  */
 /** At the end of each instruction,
  * 1. Content: 0000 0000, Carry Flag: 1, Zero Flag: 1, Negative Flag: 0
- * 2. Content: 0000 0001, Carry Flag: 0, Zero Flag: 0, Negative Flag: 0
+ * 2. Content: 0100 0000, Carry Flag: 0, Zero Flag: 0, Negative Flag: 0
  */
 
 #include "../../../include/cpu.h"
@@ -32,7 +32,7 @@
 #define TEARDOWN_CONFIG_C
 
 #define FIRST_DATA 0x01
-#define SECOND_DATA 0x02
+#define SECOND_DATA 0x80
 #define THIRD_DATA 0xFF
 
 #define TEST(number, addressing, address, val, c, z)                                              \
@@ -62,27 +62,27 @@
     }
 
 #define FIRST_TEST_ZP TEST("first", "ZP", 0x0010, 0x00, CM, ZM)
-#define SECOND_TEST_ZP TEST("second", "ZP", 0x0020, 0x01, 0x00, 0x00)
+#define SECOND_TEST_ZP TEST("second", "ZP", 0x0020, 0x40, 0x00, 0x00)
 #define THIRD_TEST_ZP
 
 #define FIRST_TEST_A TEST_A("first", 0x00, CM, ZM)
-#define SECOND_TEST_A TEST_A("second", 0x01, 0x00, 0x00)
+#define SECOND_TEST_A TEST_A("second", 0x40, 0x00, 0x00)
 #define THIRD_TEST_A
 
 #define FIRST_TEST_ABS TEST("first", "ABS", 0x0400, 0x00, CM, ZM)
-#define SECOND_TEST_ABS TEST("second", "ABS", 0x0410, 0x01, 0x00, 0x00)
+#define SECOND_TEST_ABS TEST("second", "ABS", 0x0410, 0x40, 0x00, 0x00)
 #define THIRD_TEST_ABS
 
 #define FIRST_TEST_ZPX TEST("first", "ZPX", 0x0015, 0x00, CM, ZM)
-#define SECOND_TEST_ZPX TEST("second", "ZPX", 0x0025, 0x01, 0x00, 0x00)
+#define SECOND_TEST_ZPX TEST("second", "ZPX", 0x0025, 0x40, 0x00, 0x00)
 #define THIRD_TEST_ZPX
 
 #define FIRST_TEST_ZPXW TEST("first", "ZPX with wrapping", 0x001F, 0x00, CM, ZM)
-#define SECOND_TEST_ZPXW TEST("second", "ZPX with wrapping", 0x002F, 0x01, 0x00, 0x00)
+#define SECOND_TEST_ZPXW TEST("second", "ZPX with wrapping", 0x002F, 0x40, 0x00, 0x00)
 #define THIRD_TEST_ZPXW
 
 #define FIRST_TEST_ABSX TEST("first", "ABSX", 0x0405, 0x00, CM, ZM)
-#define SECOND_TEST_ABSX TEST("second", "ABSX", 0x0415, 0x01, 0x00, 0x00)
+#define SECOND_TEST_ABSX TEST("second", "ABSX", 0x0415, 0x40, 0x00, 0x00)
 #define THIRD_TEST_ABSX
 
 #include "../templates/testTemplate.h"

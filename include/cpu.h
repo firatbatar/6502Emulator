@@ -20,15 +20,15 @@ typedef uint16_t word;
 
 /* CPU Structure */
 typedef struct __CPU_t {
-    word PC;       // Program Counter
-    byte SP;       // Stack Pointer
-    byte A;        // Accumulator
-    byte X;        // Index Register X
-    byte Y;        // Index Register Y
-    byte PS;       // Processor Status:
-                   // Negative(N) - Overflow(V) - Unused -
-                   // Break Command(B) - Decimal Mode(D) - Interrupt Disable(I) - Zero(Z) - Carry(C)
-    byte *memory;  // RAM
+  word PC;       // Program Counter
+  byte SP;       // Stack Pointer
+  byte A;        // Accumulator
+  byte X;        // Index Register X
+  byte Y;        // Index Register Y
+  byte PS;       // Processor Status:
+                 // Negative(N) - Overflow(V) - Unused -
+                 // Break Command(B) - Decimal Mode(D) - Interrupt Disable(I) - Zero(Z) - Carry(C)
+  byte *memory;  // RAM
 } CPU_t;
 
 /** Initialize CPU.

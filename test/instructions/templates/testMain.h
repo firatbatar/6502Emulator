@@ -77,6 +77,11 @@ void test_indirect_indexed(void) { INDY_TEST }
 void test_accumulator(void) { A_TEST }
 #endif
 
+#ifdef REL_TEST
+/** Test for relative addressing */
+void test_relative(void) { REL_TEST }
+#endif
+
 int main(void) {
     initializeCPU(&cpu);  // Initialize CPU
 
@@ -131,6 +136,10 @@ int main(void) {
     RUN_TEST(test_accumulator);
     #endif
     
+    #ifdef REL_TEST
+    RUN_TEST(test_relative);
+    #endif
+
     freeCPU(&cpu);  // Free CPU
 
     return UNITY_END();

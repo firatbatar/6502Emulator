@@ -32,7 +32,7 @@ void ADC(byte *addr, CPU_t *cpu) {
   setNegativeFlag(cpu, cpu->A & 0x80);
   setCarryFlag(cpu, result & 0x0100);  // Set the carry flag if ninth bit is 1
   // Set the overflow flag if same signed operands result in inverse sign
-  setOverflowFlag(cpu, ~((oldA ^ *(addr)) | (oldA ^ result)) & 0x80);
+  setOverflowFlag(cpu, ((oldA & (*addr)) | (~(oldA ^ (*addr)) & result)) & 0x80);
 }
 
 void STA(byte *addr, CPU_t *cpu) { writeByte(addr, cpu->A); }

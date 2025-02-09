@@ -24,7 +24,7 @@ void EOR(byte *addr, CPU_t *cpu) {
 void ADC(byte *addr, CPU_t *cpu) {
   // TODO: No decimal mode
 
-  word result = cpu->A + (*addr) + (cpu->PS & 0x01);
+  word result = cpu->A + (*addr) + (cpu->PS & CM);
   byte oldA = cpu->A;  // Keep the old A for overflow
   cpu->A = result & 0xFF;
 
@@ -71,7 +71,7 @@ void ASL(byte *addr, CPU_t *cpu) {
 
 void ROL(byte *addr, CPU_t *cpu) {
   byte newCarry = (*addr) & 0x80;
-  byte newVal = ((*addr) << 1) | (cpu->PS & 0x01);
+  byte newVal = ((*addr) << 1) | (cpu->PS & CM);
 
   writeByte(addr, newVal);
   setZeroFlag(cpu, newVal == 0);
@@ -91,7 +91,7 @@ void LSR(byte *addr, CPU_t *cpu) {
 
 void ROR(byte *addr, CPU_t *cpu) {
   byte newCarry = (*addr) & 0x01;
-  byte newVal = ((*addr) >> 1) | ((cpu->PS & 0x01) << 7);
+  byte newVal = ((*addr) >> 1) | ((cpu->PS & CM) << 7);
 
   writeByte(addr, newVal);
   setZeroFlag(cpu, newVal == 0);
@@ -157,4 +157,60 @@ void CPX(byte *addr, CPU_t *cpu) {
   setZeroFlag(cpu, result == 0);
   setNegativeFlag(cpu, result & 0x80);
   setCarryFlag(cpu, cpu->X >= (*addr));  // Set the carry flag if the data <= X
+}
+
+void BPL(CPU_t *cpu) {
+  if (!(cpu->PS & NM))
+    cpu->PC += (byte)cpu->memory[cpu->PC];
+  else
+    cpu->PC++;
+}
+
+void BMI(CPU_t *cpu) {
+  if (cpu->PS & NM)
+    cpu->PC += (byte)cpu->memory[cpu->PC];
+  else
+    cpu->PC++;
+}
+
+void BVC(CPU_t *cpu) {
+  if (!(cpu->PS & VM))
+    cpu->PC += (byte)cpu->memory[cpu->PC];
+  else
+    cpu->PC++;
+}
+
+void BVS(CPU_t *cpu) {
+  if (cpu->PS & VM)
+    cpu->PC += (byte)cpu->memory[cpu->PC];
+  else
+    cpu->PC++;
+}
+
+void BCC(CPU_t *cpu) {
+  if (!(cpu->PS & CM))
+    cpu->PC += (byte)cpu->memory[cpu->PC];
+  else
+    cpu->PC++;
+}
+
+void BCS(CPU_t *cpu) {
+  if (cpu->PS & CM)
+    cpu->PC += (byte)cpu->memory[cpu->PC];
+  else
+    cpu->PC++;
+}
+
+void BNE(CPU_t *cpu) {
+  if (!(cpu->PS & ZM))
+    cpu->PC += (byte)cpu->memory[cpu->PC];
+  else
+    cpu->PC++;
+}
+
+void BEQ(CPU_t *cpu) {
+  if (cpu->PS & ZM)
+    cpu->PC += (byte)cpu->memory[cpu->PC];
+  else
+    cpu->PC++;
 }

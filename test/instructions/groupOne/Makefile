@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -Wall -I../../../include
+CFLAGS := -Wall -I../../../include -I../../src -I../templates
 SRC := ../../../src/cpu.c ../../../src/instructions.c
 unity := ../../src/unity.c
 

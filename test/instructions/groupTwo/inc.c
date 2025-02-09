@@ -17,11 +17,11 @@
  * 3. Content: 0101 0100, Zero Flag: 0, Negative Flag: 0
  */
 
-#include "../../../include/cpu.h"
-#include "../../../include/opcodes.h"
-#include "../../src/unity.h"
-#include "../../src/unity_internals.h"
-#include "../templates/initCPU.h"
+#include <cpu.h>
+#include <initCPU.h>
+#include <opcodes.h>
+#include <unity.h>
+#include <unity_internals.h>
 
 #define INSTRUCTION_ZP INS_INC_ZP
 #define INSTRUCTION_ABS INS_INC_ABS
@@ -35,16 +35,16 @@
 #define SECOND_DATA 0xFE
 #define THIRD_DATA 0x53
 
-#define TEST(number, addressing, address, val, z, n)                                              \
-    {                                                                                             \
-        char msg1[100], msg2[100], msg3[100];                                                     \
-        sprintf(msg1, "Memory isn't right in %s instruction for %s.", number, addressing);        \
-        sprintf(msg2, "Zero flag isn't right in %s instruction for %s.", number, addressing);     \
-        sprintf(msg3, "Negative flag isn't right in %s instruction for %s.", number, addressing); \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readMemory(&cpu, address), msg1);                     \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS(&cpu) & ZM, msg2);                               \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(n, readPS(&cpu) & NM, msg3);                               \
-    }
+#define TEST(number, addressing, address, val, z, n)                                          \
+  {                                                                                           \
+    char msg1[100], msg2[100], msg3[100];                                                     \
+    sprintf(msg1, "Memory isn't right in %s instruction for %s.", number, addressing);        \
+    sprintf(msg2, "Zero flag isn't right in %s instruction for %s.", number, addressing);     \
+    sprintf(msg3, "Negative flag isn't right in %s instruction for %s.", number, addressing); \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readMemory(&cpu, address), msg1);                     \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS(&cpu) & ZM, msg2);                               \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(n, readPS(&cpu) & NM, msg3);                               \
+  }
 
 #define FIRST_TEST_ZP TEST("first", "ZP", 0x0010, 0x00, ZM, 0x00)
 #define SECOND_TEST_ZP TEST("second", "ZP", 0x0020, 0xFF, 0x00, NM)
@@ -66,6 +66,6 @@
 #define SECOND_TEST_ABSX TEST("second", "ABSX", 0x0415, 0xFF, 0x00, NM)
 #define THIRD_TEST_ABSX TEST("third", "ABSX", 0x0425, 0x54, 0x00, 0x00)
 
-#include "../templates/testTemplate.h"
+#include <testTemplate.h>
 
 #endif  // TEST_H

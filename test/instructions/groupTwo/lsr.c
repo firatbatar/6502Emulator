@@ -16,11 +16,11 @@
  * 2. Content: 0100 0000, Carry Flag: 0, Zero Flag: 0, Negative Flag: 0
  */
 
-#include "../../../include/cpu.h"
-#include "../../../include/opcodes.h"
-#include "../../src/unity.h"
-#include "../../src/unity_internals.h"
-#include "../templates/initCPU.h"
+#include <cpu.h>
+#include <initCPU.h>
+#include <opcodes.h>
+#include <unity.h>
+#include <unity_internals.h>
 
 #define INSTRUCTION_ZP INS_LSR_ZP
 #define INSTRUCTION_A INS_LSR_A
@@ -35,31 +35,32 @@
 #define SECOND_DATA 0x80
 #define THIRD_DATA 0xFF
 
-#define TEST(number, addressing, address, val, c, z)                                              \
-    {                                                                                             \
-        char msg1[100], msg2[100], msg3[100], msg4[100];                                          \
-        sprintf(msg1, "Memory isn't right in %s instruction for %s.", number, addressing);        \
-        sprintf(msg2, "Carry flag isn't right in %s instruction for %s.", number, addressing);    \
-        sprintf(msg3, "Zero flag isn't right in %s instruction for %s.", number, addressing);     \
-        sprintf(msg4, "Negative flag isn't right in %s instruction for %s.", number, addressing); \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readMemory(&cpu, address), msg1);                     \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(c, readPS(&cpu) & CM, msg2);                               \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS(&cpu) & ZM, msg3);                               \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & NM, msg4);                            \
-    }
+#define TEST(number, addressing, address, val, c, z)                                          \
+  {                                                                                           \
+    char msg1[100], msg2[100], msg3[100], msg4[100];                                          \
+    sprintf(msg1, "Memory isn't right in %s instruction for %s.", number, addressing);        \
+    sprintf(msg2, "Carry flag isn't right in %s instruction for %s.", number, addressing);    \
+    sprintf(msg3, "Zero flag isn't right in %s instruction for %s.", number, addressing);     \
+    sprintf(msg4, "Negative flag isn't right in %s instruction for %s.", number, addressing); \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readMemory(&cpu, address), msg1);                     \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(c, readPS(&cpu) & CM, msg2);                               \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS(&cpu) & ZM, msg3);                               \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & NM, msg4);                            \
+  }
 
-#define TEST_A(number, val, c, z)                                                                         \
-    {                                                                                                     \
-        char msg1[100], msg2[100], msg3[100], msg4[100];                                                  \
-        sprintf(msg1, "A isn't right in %s instruction for Accumulator addressing.", number);             \
-        sprintf(msg2, "Carry flag isn't right in %s instruction for Accumulator addressing.", number);    \
-        sprintf(msg3, "Zero flag isn't right in %s instruction for Accumulator addressing.", number);     \
-        sprintf(msg4, "Negative flag isn't right in %s instruction for Accumulator addressing.", number); \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readA(&cpu), msg1);                                           \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(c, readPS(&cpu) & CM, msg2);                                       \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS(&cpu) & ZM, msg3);                                       \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & NM, msg4);                                    \
-    }
+#define TEST_A(number, val, c, z)                                                                  \
+  {                                                                                                \
+    char msg1[100], msg2[100], msg3[100], msg4[100];                                               \
+    sprintf(msg1, "A isn't right in %s instruction for Accumulator addressing.", number);          \
+    sprintf(msg2, "Carry flag isn't right in %s instruction for Accumulator addressing.", number); \
+    sprintf(msg3, "Zero flag isn't right in %s instruction for Accumulator addressing.", number);  \
+    sprintf(msg4, "Negative flag isn't right in %s instruction for Accumulator addressing.",       \
+            number);                                                                               \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readA(&cpu), msg1);                                        \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(c, readPS(&cpu) & CM, msg2);                                    \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS(&cpu) & ZM, msg3);                                    \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x00, readPS(&cpu) & NM, msg4);                                 \
+  }
 
 #define FIRST_TEST_ZP TEST("first", "ZP", 0x0010, 0x00, CM, ZM)
 #define SECOND_TEST_ZP TEST("second", "ZP", 0x0020, 0x40, 0x00, 0x00)
@@ -85,6 +86,6 @@
 #define SECOND_TEST_ABSX TEST("second", "ABSX", 0x0415, 0x40, 0x00, 0x00)
 #define THIRD_TEST_ABSX
 
-#include "../templates/testTemplate.h"
+#include <testTemplate.h>
 
 #endif  // TEST_H

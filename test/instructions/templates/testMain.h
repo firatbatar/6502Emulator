@@ -5,8 +5,8 @@
 #ifdef SETUP_CONFIG
 #ifdef TEARDOWN_CONFIG
 
-#include "../../src/unity.h"
-#include "../../src/unity_internals.h"
+#include <unity.h>
+#include <unity_internals.h>
 
 void setUp(void) { SETUP_CONFIG }
 
@@ -83,66 +83,66 @@ void test_relative(void) { REL_TEST }
 #endif
 
 int main(void) {
-    initializeCPU(&cpu);  // Initialize CPU
+  initializeCPU(&cpu);  // Initialize CPU
 
-    UNITY_BEGIN();
+  UNITY_BEGIN();
 
-    #ifdef IM_TEST
-    RUN_TEST(test_immediate);
-    #endif
+#ifdef IM_TEST
+  RUN_TEST(test_immediate);
+#endif
 
-    #ifdef ZP_TEST
-    RUN_TEST(test_zero_page);
-    #endif
+#ifdef ZP_TEST
+  RUN_TEST(test_zero_page);
+#endif
 
-    #ifdef ZPX_TEST
-    RUN_TEST(test_zero_page_x);
-    #endif
-    #ifdef ZPX_W_TEST
-    RUN_TEST(test_zero_page_x_wrap);
-    #endif
+#ifdef ZPX_TEST
+  RUN_TEST(test_zero_page_x);
+#endif
+#ifdef ZPX_W_TEST
+  RUN_TEST(test_zero_page_x_wrap);
+#endif
 
-    #ifdef ZPY_TEST
-    RUN_TEST(test_zero_page_y);
-    #endif
-    #ifdef ZPY_W_TEST
-    RUN_TEST(test_zero_page_y_wrap);
-    #endif
+#ifdef ZPY_TEST
+  RUN_TEST(test_zero_page_y);
+#endif
+#ifdef ZPY_W_TEST
+  RUN_TEST(test_zero_page_y_wrap);
+#endif
 
-    #ifdef ABS_TEST
-    RUN_TEST(test_absolute);
-    #endif
+#ifdef ABS_TEST
+  RUN_TEST(test_absolute);
+#endif
 
-    #ifdef ABSX_TEST
-    RUN_TEST(test_absolute_x);
-    #endif
+#ifdef ABSX_TEST
+  RUN_TEST(test_absolute_x);
+#endif
 
-    #ifdef ABSY_TEST
-    RUN_TEST(test_absolute_y);
-    #endif
+#ifdef ABSY_TEST
+  RUN_TEST(test_absolute_y);
+#endif
 
-    #ifdef INDX_TEST
-    RUN_TEST(test_indexed_inderect);
-    #endif
-    #ifdef INDX_W_TEST
-    RUN_TEST(test_indexed_indirect_wrap);
-    #endif
+#ifdef INDX_TEST
+  RUN_TEST(test_indexed_inderect);
+#endif
+#ifdef INDX_W_TEST
+  RUN_TEST(test_indexed_indirect_wrap);
+#endif
 
-    #ifdef INDY_TEST
-    RUN_TEST(test_indirect_indexed);
-    #endif
+#ifdef INDY_TEST
+  RUN_TEST(test_indirect_indexed);
+#endif
 
-    #ifdef A_TEST
-    RUN_TEST(test_accumulator);
-    #endif
-    
-    #ifdef REL_TEST
-    RUN_TEST(test_relative);
-    #endif
+#ifdef A_TEST
+  RUN_TEST(test_accumulator);
+#endif
 
-    freeCPU(&cpu);  // Free CPU
+#ifdef REL_TEST
+  RUN_TEST(test_relative);
+#endif
 
-    return UNITY_END();
+  freeCPU(&cpu);  // Free CPU
+
+  return UNITY_END();
 }
 
 #endif

@@ -20,11 +20,11 @@
  * 3. Content: Zero Flag: 0, Overflow Flag: 0, Negative Flag: 0
  */
 
-#include "../../../include/cpu.h"
-#include "../../../include/opcodes.h"
-#include "../../src/unity.h"
-#include "../../src/unity_internals.h"
-#include "../templates/initCPU.h"
+#include <cpu.h>
+#include <initCPU.h>
+#include <opcodes.h>
+#include <unity.h>
+#include <unity_internals.h>
 
 #define INSTRUCTION_ZP INS_BIT_ZP
 #define INSTRUCTION_ABS INS_BIT_ABS
@@ -36,20 +36,20 @@
 #define SECOND_DATA 0xC5
 #define THIRD_DATA 0x0A
 
-#define TEST(number, addressing, address, val, v, z, n)                                           \
-    {                                                                                             \
-        char msg1[100], msg2[100], msg3[100], msg4[100], msg5[100];                               \
-        sprintf(msg1, "Memory has been changed in %s instruction for %s.", number, addressing);   \
-        sprintf(msg2, "A has been changed in %s instruction for %s.", number, addressing);        \
-        sprintf(msg3, "Overflow flag isn't right in %s instruction for %s.", number, addressing); \
-        sprintf(msg4, "Zero flag isn't right in %s instruction for %s.", number, addressing);     \
-        sprintf(msg5, "Negative flag isn't right in %s instruction for %s.", number, addressing); \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readMemory(&cpu, address), msg1);                     \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x0A, readA(&cpu), msg2);                                  \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(v, readPS(&cpu) & VM, msg3);                               \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS(&cpu) & ZM, msg4);                               \
-        TEST_ASSERT_EQUAL_HEX8_MESSAGE(n, readPS(&cpu) & NM, msg5);                               \
-    }
+#define TEST(number, addressing, address, val, v, z, n)                                       \
+  {                                                                                           \
+    char msg1[100], msg2[100], msg3[100], msg4[100], msg5[100];                               \
+    sprintf(msg1, "Memory has been changed in %s instruction for %s.", number, addressing);   \
+    sprintf(msg2, "A has been changed in %s instruction for %s.", number, addressing);        \
+    sprintf(msg3, "Overflow flag isn't right in %s instruction for %s.", number, addressing); \
+    sprintf(msg4, "Zero flag isn't right in %s instruction for %s.", number, addressing);     \
+    sprintf(msg5, "Negative flag isn't right in %s instruction for %s.", number, addressing); \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(val, readMemory(&cpu, address), msg1);                     \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(0x0A, readA(&cpu), msg2);                                  \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(v, readPS(&cpu) & VM, msg3);                               \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(z, readPS(&cpu) & ZM, msg4);                               \
+    TEST_ASSERT_EQUAL_HEX8_MESSAGE(n, readPS(&cpu) & NM, msg5);                               \
+  }
 
 #define FIRST_TEST_ZP TEST("first", "ZP", 0x0010, FIRST_DATA, 0x00, ZM, 0x00)
 #define SECOND_TEST_ZP TEST("second", "ZP", 0x0020, SECOND_DATA, VM, ZM, NM)
@@ -59,6 +59,6 @@
 #define SECOND_TEST_ABS TEST("second", "ABS", 0x0410, SECOND_DATA, VM, ZM, NM)
 #define THIRD_TEST_ABS TEST("third", "ABS", 0x0420, THIRD_DATA, 0x00, 0x00, 0x00)
 
-#include "../templates/testTemplate.h"
+#include <testTemplate.h>
 
 #endif  // TEST_H

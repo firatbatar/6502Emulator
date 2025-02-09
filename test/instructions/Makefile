@@ -1,4 +1,6 @@
-all: .groupOne .groupTwo .groupThree
+all: .groupOne .groupTwo .groupThree .branch
+
+.PHONY: all .groupOne .groupTwo .groupThree .branch clean
 
 .groupOne:
 	@echo "\nRunning Group One tests..."
@@ -11,6 +13,10 @@ all: .groupOne .groupTwo .groupThree
 .groupThree:
 	@echo "\nRunning Group Three tests..."
 	cd ./groupThree && $(MAKE) run && $(MAKE) clean
+
+.branch:
+	@echo "\nRunning Branch tests..."
+	cd ./branch && $(MAKE) run && $(MAKE) clean
 
 clean:
 	@cd ./groupOne && $(MAKE) clean

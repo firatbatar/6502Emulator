@@ -146,4 +146,14 @@
 #define INS_CPX_ZP    0xE4
 #define INS_CPX_ABS   0xEC
 
+/* Branching */
+#define INS_BPL_REL   0x10
+#define INS_BMI_REL   0x30
+#define INS_BVC_REL   0x50
+#define INS_BVS_REL   0x70
+#define INS_BCC_REL   0x90
+#define INS_BCS_REL   0xB0
+#define INS_BNE_REL   0xD0
+#define INS_BEQ_REL   0xF0
+
 #endif

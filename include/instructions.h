@@ -166,4 +166,52 @@ void CPY(byte *addr, CPU_t *cpu);
  */
 void CPX(byte *addr, CPU_t *cpu);
 
+/** Bracnh on Result Plus
+ * If N is clear, the program counter is advanced by the relative displacement.
+ * @param cpu CPU_t struct to read/write PS and PC from/to.
+ */
+void BPL(CPU_t *cpu);
+
+/** Branch on Result Minus
+ * If N is set, the program counter is advanced by the relative displacement.
+ * @param cpu CPU_t struct to read/write PS and PC from/to.
+ */
+void BMI(CPU_t *cpu);
+
+/** Branch on Overflow Clear
+ * If V is clear, the program counter is advanced by the relative displacement.
+ * @param cpu CPU_t struct to read/write PS and PC from/to.
+ */
+void BVC(CPU_t *cpu);
+
+/** Branch on Overflow Set
+ * If V is set, the program counter is advanced by the relative displacement.
+ * @param cpu CPU_t struct to read/write PS and PC from/to.
+ */
+void BVS(CPU_t *cpu);
+
+/** Branch on Carry Clear
+ * If C is clear, the program counter is advanced by the relative displacement.
+ * @param cpu CPU_t struct to read/write PS and PC from/to.
+ */
+void BCC(CPU_t *cpu);
+
+/** Branch on Carry Set
+ * If C is set, the program counter is advanced by the relative displacement.
+ * @param cpu CPU_t struct to read/write PS and PC from/to.
+ */
+void BCS(CPU_t *cpu);
+
+/** Branch on Result Not Zero
+ * If Z is set, the program counter is advanced by the relative displacement.
+ * @param cpu CPU_t struct to read/write PS and PC from/to.
+ */
+void BNE(CPU_t *cpu);
+
+/** Branch on Result Zero
+ * If Z is clear, the program counter is advanced by the relative displacement.
+ * @param cpu CPU_t struct to read/write PS and PC from/to.
+ */
+void BEQ(CPU_t *cpu);
+
 #endif  // INSTRUCTIONS_H

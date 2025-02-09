@@ -160,49 +160,113 @@ void CPX(byte *addr, CPU_t *cpu) {
 }
 
 void BPL(CPU_t *cpu) {
-  if (!(cpu->PS & NM))
-    cpu->PC += (byte)cpu->memory[cpu->PC];
+  if (!(cpu->PS & NM)) {
+    byte offset = cpu->memory[cpu->PC];
+    if (offset & 0x80) {
+      offset = ~offset + 1;
+      cpu->PC -= offset;
+    }
+    else {
+      cpu->PC += offset;
+    }
+  }
   cpu->PC++;
 }
 
 void BMI(CPU_t *cpu) {
-  if (cpu->PS & NM)
-    cpu->PC += (byte)cpu->memory[cpu->PC];
+  if (cpu->PS & NM) {
+    byte offset = cpu->memory[cpu->PC];
+    if (offset & 0x80) {
+      offset = ~offset + 1;
+      cpu->PC -= offset;
+    }
+    else {
+      cpu->PC += offset;
+    }
+  }
   cpu->PC++;
 }
 
 void BVC(CPU_t *cpu) {
-  if (!(cpu->PS & VM))
-    cpu->PC += (byte)cpu->memory[cpu->PC];
+  if (!(cpu->PS & VM)) {
+    byte offset = cpu->memory[cpu->PC];
+    if (offset & 0x80) {
+      offset = ~offset + 1;
+      cpu->PC -= offset;
+    }
+    else {
+      cpu->PC += offset;
+    }
+  }
   cpu->PC++;
 }
 
 void BVS(CPU_t *cpu) {
-  if (cpu->PS & VM)
-    cpu->PC += (byte)cpu->memory[cpu->PC];
+  if (cpu->PS & VM) {
+    byte offset = cpu->memory[cpu->PC];
+    if (offset & 0x80) {
+      offset = ~offset + 1;
+      cpu->PC -= offset;
+    }
+    else {
+      cpu->PC += offset;
+    }
+  }
   cpu->PC++;
 }
 
 void BCC(CPU_t *cpu) {
-  if (!(cpu->PS & CM))
-    cpu->PC += (byte)cpu->memory[cpu->PC];
+  if (!(cpu->PS & CM)) {
+    byte offset = cpu->memory[cpu->PC];
+    if (offset & 0x80) {
+      offset = ~offset + 1;
+      cpu->PC -= offset;
+    }
+    else {
+      cpu->PC += offset;
+    }
+  }
   cpu->PC++;
 }
 
 void BCS(CPU_t *cpu) {
-  if (cpu->PS & CM)
-    cpu->PC += (byte)cpu->memory[cpu->PC];
+  if (cpu->PS & CM) {
+    byte offset = cpu->memory[cpu->PC];
+    if (offset & 0x80) {
+      offset = ~offset + 1;
+      cpu->PC -= offset;
+    }
+    else {
+      cpu->PC += offset;
+    }
+  }
   cpu->PC++;
 }
 
 void BNE(CPU_t *cpu) {
-  if (!(cpu->PS & ZM))
-    cpu->PC += (byte)cpu->memory[cpu->PC];
+  if (!(cpu->PS & ZM)) {
+    byte offset = cpu->memory[cpu->PC];
+    if (offset & 0x80) {
+      offset = ~offset + 1;
+      cpu->PC -= offset;
+    }
+    else {
+      cpu->PC += offset;
+    }
+  }
   cpu->PC++;
 }
 
 void BEQ(CPU_t *cpu) {
-  if (cpu->PS & ZM)
-    cpu->PC += (byte)cpu->memory[cpu->PC];
+  if (cpu->PS & ZM) {
+    byte offset = cpu->memory[cpu->PC];
+    if (offset & 0x80) {
+      offset = ~offset + 1;
+      cpu->PC -= offset;
+    }
+    else {
+      cpu->PC += offset;
+    }
+  }
   cpu->PC++;
 }

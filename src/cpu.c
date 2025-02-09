@@ -311,6 +311,37 @@ void decodeG3Instruction(byte aaa, byte *addr, CPU_t *cpu) {
   }
 }
 
+void decodeBranchInstruction(byte xx, byte y, CPU_t *cpu) {
+  switch (xx) {
+    case (0):  // 00 - N
+      if (y)
+        BMI(cpu);
+      else
+        BPL(cpu);
+      break;
+    case (1):  // 01 - V
+      if (y)
+        BVS(cpu);
+      else
+        BVC(cpu);
+      break;
+    case (2):  // 10 - C
+      if (y)
+        BCS(cpu);
+      else
+        BCC(cpu);
+      break;
+    case (3):  // 11 - Z
+      if (y)
+        BEQ(cpu);
+      else
+        BNE(cpu);
+    default:
+      fprintf(stderr, "Invalid xx value: %d\n", xx);
+      exit(1);
+  }
+}
+
 void execute(CPU_t *cpu) {
   // Fetch
   byte opcode = cpu->memory[cpu->PC];
@@ -361,6 +392,10 @@ void execute(CPU_t *cpu) {
       case 0:  // Group 3, branch, and inturrupt/subroutine instructions
         if (bbb == 4) {
           // Branch
+          byte xx = aaa >> 1;   // xx indicates the flag to check
+          byte y = aaa & 0x01;  // y indicates the condition
+
+          decodeBranchInstruction(xx, y, cpu);  // Decode and execute the branch instruction
         }
         else if (bbb == 0 && (aaa == 0 || aaa == 1 || aaa == 2 || aaa == 3)) {
           // Inturrupt/subroutine

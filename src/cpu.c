@@ -336,6 +336,7 @@ void decodeBranchInstruction(byte xx, byte y, CPU_t *cpu) {
         BEQ(cpu);
       else
         BNE(cpu);
+      break;
     default:
       fprintf(stderr, "Invalid xx value: %d\n", xx);
       exit(1);

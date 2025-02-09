@@ -162,55 +162,47 @@ void CPX(byte *addr, CPU_t *cpu) {
 void BPL(CPU_t *cpu) {
   if (!(cpu->PS & NM))
     cpu->PC += (byte)cpu->memory[cpu->PC];
-  else
-    cpu->PC++;
+  cpu->PC++;
 }
 
 void BMI(CPU_t *cpu) {
   if (cpu->PS & NM)
     cpu->PC += (byte)cpu->memory[cpu->PC];
-  else
-    cpu->PC++;
+  cpu->PC++;
 }
 
 void BVC(CPU_t *cpu) {
   if (!(cpu->PS & VM))
     cpu->PC += (byte)cpu->memory[cpu->PC];
-  else
-    cpu->PC++;
+  cpu->PC++;
 }
 
 void BVS(CPU_t *cpu) {
   if (cpu->PS & VM)
     cpu->PC += (byte)cpu->memory[cpu->PC];
-  else
-    cpu->PC++;
+  cpu->PC++;
 }
 
 void BCC(CPU_t *cpu) {
   if (!(cpu->PS & CM))
     cpu->PC += (byte)cpu->memory[cpu->PC];
-  else
-    cpu->PC++;
+  cpu->PC++;
 }
 
 void BCS(CPU_t *cpu) {
   if (cpu->PS & CM)
     cpu->PC += (byte)cpu->memory[cpu->PC];
-  else
-    cpu->PC++;
+  cpu->PC++;
 }
 
 void BNE(CPU_t *cpu) {
   if (!(cpu->PS & ZM))
     cpu->PC += (byte)cpu->memory[cpu->PC];
-  else
-    cpu->PC++;
+  cpu->PC++;
 }
 
 void BEQ(CPU_t *cpu) {
   if (cpu->PS & ZM)
     cpu->PC += (byte)cpu->memory[cpu->PC];
-  else
-    cpu->PC++;
+  cpu->PC++;
 }
